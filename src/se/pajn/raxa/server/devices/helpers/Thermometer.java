@@ -5,10 +5,28 @@ package se.pajn.raxa.server.devices.helpers;
  */
 public abstract class Thermometer extends Sensor {
 
-    public abstract int getResolution();
-    public abstract int getUpdateFrequency();
-    public abstract int getTemperatureMax();
-    public abstract int getTemperatureMin();
+    /**
+     * @return The resolution of the thermometer in degrees celsius
+     */
+    public abstract float getResolution();
 
-    public abstract int getTemperature();
+    /**
+     * @return The update frequency of the thermometer in seconds
+     */
+    public abstract float getUpdateFrequency();
+
+    /**
+     * @return The maximal supported temperature of the thermometer in degrees celsius
+     */
+    public abstract float getTemperatureMax();
+
+    /**
+     * @return The minimal supported temperature of the thermometer in degrees celsius
+     */
+    public abstract float getTemperatureMin();
+
+    /**
+     * @return The current or last measured temperature of the thermometer in degrees celsius
+     */
+    public abstract float getTemperature();
 }
