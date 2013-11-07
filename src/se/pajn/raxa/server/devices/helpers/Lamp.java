@@ -5,7 +5,7 @@ package se.pajn.raxa.server.devices.helpers;
  */
 public abstract class Lamp extends Output {
 
-    public abstract void isTurnedOn();
+    public abstract boolean isTurnedOn();
     public abstract void turnOn();
     public abstract void turnOff();
 }
