@@ -1,8 +1,8 @@
-package se.pajn.raxa.server.devices.helpers;
+package se.raxa.server.devices.helpers;
 
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
-import se.pajn.raxa.server.Database;
+import se.raxa.server.Database;
 
 /**
  * @author Rasmus Eneman

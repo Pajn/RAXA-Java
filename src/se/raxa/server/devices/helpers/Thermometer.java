@@ -1,4 +1,4 @@
-package se.pajn.raxa.server.devices.helpers;
+package se.raxa.server.devices.helpers;
 
 /**
  * @author Rasmus Eneman

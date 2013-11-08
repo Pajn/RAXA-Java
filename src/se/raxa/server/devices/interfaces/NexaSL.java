@@ -1,4 +1,4 @@
-package se.pajn.raxa.server.devices.interfaces;
+package se.raxa.server.devices.interfaces;
 
 /**
  * @author Rasmus Eneman

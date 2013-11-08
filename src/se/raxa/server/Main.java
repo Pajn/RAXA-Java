@@ -1,4 +1,4 @@
-package se.pajn.raxa.server;
+package se.raxa.server;
 
 import com.mongodb.MongoClient;
 

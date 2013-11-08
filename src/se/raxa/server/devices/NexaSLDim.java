@@ -1,7 +1,7 @@
-package se.pajn.raxa.server.devices;
+package se.raxa.server.devices;
 
-import se.pajn.raxa.server.devices.helpers.DimmableByLevel;
-import se.pajn.raxa.server.devices.helpers.DimmableByTime;
+import se.raxa.server.devices.helpers.DimmableByLevel;
+import se.raxa.server.devices.helpers.DimmableByTime;
 
 /**
  * @author Rasmus Eneman

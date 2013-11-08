@@ -1,8 +1,8 @@
-package se.pajn.raxa.server.devices;
+package se.raxa.server.devices;
 
-import se.pajn.raxa.server.devices.helpers.Lamp;
-import se.pajn.raxa.server.devices.helpers.Status;
-import se.pajn.raxa.server.devices.interfaces.NexaSC;
+import se.raxa.server.devices.helpers.Lamp;
+import se.raxa.server.devices.helpers.Status;
+import se.raxa.server.devices.interfaces.NexaSC;
 
 /**
  * @author Rasmus Eneman
