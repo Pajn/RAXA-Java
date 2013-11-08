@@ -1,8 +1,7 @@
-package se.raxa.server.devices;
+package se.raxa.plugin.nexasc;
 
 import se.raxa.server.devices.helpers.Lamp;
 import se.raxa.server.devices.helpers.Status;
-import se.raxa.server.devices.interfaces.NexaSC;
 
 /**
  * @author Rasmus Eneman
@@ -40,7 +39,7 @@ public class NexaSCOnOff extends Lamp implements NexaSC {
      */
     public void setHouseDevice(byte house, byte device) {
         getDbObj().put("house", house);
-        getDbObj().put("device", house);
+        getDbObj().put("device", device);
     }
 
     /**

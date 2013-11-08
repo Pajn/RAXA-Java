@@ -1,8 +1,7 @@
-package se.raxa.server.devices;
+package se.raxa.plugin.nexasl;
 
 import se.raxa.server.devices.helpers.Lamp;
 import se.raxa.server.devices.helpers.Status;
-import se.raxa.server.devices.interfaces.NexaSL;
 
 /**
  * @author Rasmus Eneman

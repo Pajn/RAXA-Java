@@ -1,4 +1,4 @@
-package se.raxa.server.devices.interfaces;
+package se.raxa.plugin.nexasc;
 
 /**
  * @author Rasmus Eneman

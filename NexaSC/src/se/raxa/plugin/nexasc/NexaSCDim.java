@@ -1,4 +1,4 @@
-package se.raxa.server.devices;
+package se.raxa.plugin.nexasc;
 
 import se.raxa.server.devices.helpers.DimmableByTime;
 

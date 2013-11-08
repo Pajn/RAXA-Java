@@ -4,6 +4,8 @@ import com.mongodb.MongoClient;
 
 import java.net.UnknownHostException;
 
+import static se.raxa.server.plugins.PluginLoader.initPlugins;
+
 /**
  * @author Rasmus Eneman
  */
@@ -14,5 +16,7 @@ public class Main {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
+        initPlugins();
     }
 }
