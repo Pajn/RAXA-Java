@@ -45,6 +45,7 @@ public class TellstickNet extends Connector {
      * @param delay The delay between repeats in ms
      */
     public void send(String message, int repeats, int delay) {
+        //noinspection SpellCheckingInspection
         message = String.format("4:sendh1:S%X:%s1:Pi%Xs1:Ri%Xss", message.length(), message, delay, repeats);
         //TODO
     }
