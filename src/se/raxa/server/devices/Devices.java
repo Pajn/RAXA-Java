@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Rasmus Eneman
  */
 public class Devices {
-    private static Map<String, Class<? extends Device>> deviceClasses = new HashMap<>();
+    private static final Map<String, Class<? extends Device>> deviceClasses = new HashMap<>();
 
     /**
      * @return A map of all Device plugin classes

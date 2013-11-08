@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Rasmus Eneman
  */
 public class Connectors {
-    private static Map<String, Class<? extends Connector>> connectorClasses = new HashMap<>();
+    private static final Map<String, Class<? extends Connector>> connectorClasses = new HashMap<>();
 
     /**
      * @return A map of all Connector plugin classes

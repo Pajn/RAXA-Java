@@ -1,7 +1,6 @@
 package se.raxa.server.plugins;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -10,7 +9,7 @@ import java.util.ServiceLoader;
  */
 public class PluginLoader {
     private static PluginLoader pluginLoader;
-    private ServiceLoader<Plugin> serviceLoader;
+    private final ServiceLoader<Plugin> serviceLoader;
 
     private PluginLoader() {
         serviceLoader = ServiceLoader.load(Plugin.class, addPluginJarsToClasspath());
@@ -22,14 +21,9 @@ public class PluginLoader {
      * @return a ClassLoader containing all plugin classes
      */
     private static ClassLoader addPluginJarsToClasspath() {
-        try {
-            File file = new File("plugins");
-            System.out.println(file.getAbsolutePath());
-            return ClasspathUtils.addDirToClasspath(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return PluginLoader.class.getClassLoader();
+        File file = new File("plugins");
+        System.out.println(file.getAbsolutePath());
+        return ClasspathUtils.addDirToClasspath(file);
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Rasmus Eneman
  */
 public class Lamps {
-    private static Map<String, Class<? extends Lamp>> lampClasses = new HashMap<>();
+    private static final Map<String, Class<? extends Lamp>> lampClasses = new HashMap<>();
 
     /**
      * @return A map of all lamp plugin classes
