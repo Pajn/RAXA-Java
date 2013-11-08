@@ -57,12 +57,25 @@ public abstract class Device {
      * @param value The value to search for
      *
      * @return A BasicDBObject for that device
-     *
-     * @throws NotFoundException
      */
-    private static BasicDBObject queryDatabase(String key, Object value) throws NotFoundException {
+    private static BasicDBObject queryDatabaseSafe(String key, Object value) {
         BasicDBObject query = new BasicDBObject(key, value);
         query = (BasicDBObject) Database.devices().findOne(query);
+        return query;
+    }
+
+    /**
+     * Queries the database for one device using
+     *
+     * @param key The key of the value
+     * @param value The value to search for
+     *
+     * @return A BasicDBObject for that device
+     *
+     * @throws NotFoundException If no device where found
+     */
+    private static BasicDBObject queryDatabase(String key, Object value) throws NotFoundException {
+        BasicDBObject query = queryDatabaseSafe(key, value);
         if (query == null) {
             throw new NotFoundException(String.format("No device with the %s '%s' found", key, value.toString()));
         }
@@ -75,8 +88,8 @@ public abstract class Device {
      * @param clazz The class of the Device
      * @param id The MongoDB id of the Device
      *
-     * @throws NotFoundException
-     * @throws ClassCreationException
+     * @throws NotFoundException If no device where found
+     * @throws ClassCreationException If the class couldn't be created
      */
     public static <T extends Device> T getDeviceById(Class<T> clazz, ObjectId id) throws NotFoundException,
             ClassCreationException {
@@ -88,8 +101,8 @@ public abstract class Device {
      *
      * @param id The MongoDB id of the Device
      *
-     * @throws NotFoundException
-     * @throws ClassCreationException
+     * @throws NotFoundException If no device where found
+     * @throws ClassCreationException If the class couldn't be created
      */
     public static Device getDeviceById(ObjectId id) throws NotFoundException, ClassCreationException {
         return getDeviceById(Device.class, id);
@@ -101,8 +114,8 @@ public abstract class Device {
      * @param clazz The class of the Device
      * @param name The name of the Device
      *
-     * @throws NotFoundException
-     * @throws ClassCreationException
+     * @throws NotFoundException If no device where found
+     * @throws ClassCreationException If the class couldn't be created
      */
     public static <T extends Device> T getDeviceByName(Class<T> clazz, String name) throws NotFoundException,
             ClassCreationException {
@@ -114,8 +127,8 @@ public abstract class Device {
      *
      * @param name The name of the Device
      *
-     * @throws NotFoundException
-     * @throws ClassCreationException
+     * @throws NotFoundException If no device where found
+     * @throws ClassCreationException If the class couldn't be created
      */
     public static Device getDeviceByName(String name) throws NotFoundException, ClassCreationException {
         return getDeviceByName(Device.class, name);
@@ -144,8 +157,13 @@ public abstract class Device {
 
     /**
      * @param name The name to set
+     *
+     * @throws IllegalArgumentException If the name already is in use
      */
-    public void setName(String name) {
+    public void setName(String name) throws IllegalArgumentException {
+        if (queryDatabaseSafe("name", name) != null) {
+            throw new IllegalArgumentException(String.format("The name '%s' is already in use", name));
+        }
         obj.put("name", name);
     }
 
