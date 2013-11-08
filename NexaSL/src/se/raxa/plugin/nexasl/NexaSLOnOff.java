@@ -1,10 +1,14 @@
 package se.raxa.plugin.nexasl;
 
+import com.mongodb.BasicDBObject;
 import se.raxa.plugin.tellsticknet.TellstickNet;
+import se.raxa.server.Database;
 import se.raxa.server.devices.helpers.Lamp;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
+
+import java.util.Random;
 
 /**
  * @author Rasmus Eneman
@@ -12,11 +16,32 @@ import se.raxa.server.exceptions.StatusChangeException;
 public class NexaSLOnOff extends Lamp implements NexaSL {
 
     /**
+     * Called when a new object is created
+     * Generates a unique random id as sender id
+     */
+    @Override
+    protected void onCreate() {
+        Random r = new Random();
+        int rand;
+        BasicDBObject query;
+
+        do {
+            rand = r.nextInt(67234433);
+
+            query = new BasicDBObject("type", "NexaSL");
+            query.put("sender_id", rand);
+
+        } while (Database.devices().findOne(query) != null);
+
+        this.getDbObj().put("sender_id", rand);
+    }
+
+    /**
      * @return An array of types, ordered by position in tree
      */
     @Override
     public String[] getType() {
-        return new String[] {"NexaSLOnOff", "Lamp", "Output"};
+        return new String[] {"NexaSLOnOff", "NexaSL", "Lamp", "Output"};
     }
 
     /**

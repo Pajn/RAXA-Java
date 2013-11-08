@@ -17,7 +17,7 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
      */
     @Override
     public String[] getType() {
-        return new String[] {"NexaSLDim", "DimmableByLevel", "DimmableByTime", "Lamp", "Output"};
+        return new String[] {"NexaSLDim", "NexaSL", "DimmableByLevel", "DimmableByTime", "Lamp", "Output"};
     }
 
     /**
