@@ -25,6 +25,7 @@ public class Lamps {
      * @param lampClass The class of the plugin
      */
     public static <T extends Lamp> void registerPlugin(String name, Class<T> lampClass) {
+        Devices.registerPlugin(name, lampClass);
         lampClasses.put(name, lampClass);
     }
 }

@@ -25,6 +25,7 @@ public class Connectors {
      * @param connectorClass The class of the plugin
      */
     public static <T extends Connector> void registerPlugin(String name, Class<T> connectorClass) {
+        Devices.registerPlugin(name, connectorClass);
         connectorClasses.put(name, connectorClass);
     }
 }
