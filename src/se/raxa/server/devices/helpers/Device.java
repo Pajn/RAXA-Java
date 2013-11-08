@@ -51,6 +51,25 @@ public abstract class Device {
     }
 
     /**
+     * Queries the database for one device using
+     *
+     * @param key The key of the value
+     * @param value The value to search for
+     *
+     * @return A BasicDBObject for that device
+     *
+     * @throws NotFoundException
+     */
+    private static BasicDBObject queryDatabase(String key, Object value) throws NotFoundException {
+        BasicDBObject query = new BasicDBObject(key, value);
+        query = (BasicDBObject) Database.devices().findOne(query);
+        if (query == null) {
+            throw new NotFoundException(String.format("No device with the %s '%s' found", key, value.toString()));
+        }
+        return query;
+    }
+
+    /**
      * Gets a Device from the database using its id.
      *
      * @param clazz The class of the Device
@@ -61,12 +80,7 @@ public abstract class Device {
      */
     public static <T extends Device> T getDeviceById(Class<T> clazz, ObjectId id) throws NotFoundException,
             ClassCreationException {
-        BasicDBObject query = new BasicDBObject("_id", id);
-        query = (BasicDBObject) Database.devices().findOne(query);
-        if (query == null) {
-            throw new NotFoundException(String.format("No device with the id '%s' found", id.toString()));
-        }
-        return createDeviceFromDbObject(clazz, query);
+        return createDeviceFromDbObject(clazz, queryDatabase("_id", id));
     }
 
     /**
@@ -79,6 +93,32 @@ public abstract class Device {
      */
     public static Device getDeviceById(ObjectId id) throws NotFoundException, ClassCreationException {
         return getDeviceById(Device.class, id);
+    }
+
+    /**
+     * Gets a Device from the database using name.
+     *
+     * @param clazz The class of the Device
+     * @param name The name of the Device
+     *
+     * @throws NotFoundException
+     * @throws ClassCreationException
+     */
+    public static <T extends Device> T getDeviceByName(Class<T> clazz, String name) throws NotFoundException,
+            ClassCreationException {
+        return createDeviceFromDbObject(clazz, queryDatabase("name", name));
+    }
+
+    /**
+     * Gets a Device from the database using its name.
+     *
+     * @param name The name of the Device
+     *
+     * @throws NotFoundException
+     * @throws ClassCreationException
+     */
+    public static Device getDeviceByName(String name) throws NotFoundException, ClassCreationException {
+        return getDeviceByName(Device.class, name);
     }
 
     /**
