@@ -2,11 +2,16 @@ package se.raxa.server.devices.helpers;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import org.bson.types.ObjectId;
 import se.raxa.server.Database;
 import se.raxa.server.devices.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Rasmus Eneman
@@ -132,6 +137,27 @@ public abstract class Device {
      */
     public static Device getDeviceByName(String name) throws NotFoundException, ClassCreationException {
         return getDeviceByName(Device.class, name);
+    }
+
+    /**
+     * Gets all Devices from the database implementing the specified type
+     *
+     * @param type The type of the Devices
+     *
+     * @throws ClassCreationException
+     */
+    public static <T extends Device> List<T> getDevicesByType(Class<T> type) throws ClassCreationException {
+        List<T> devices = new ArrayList<>();
+
+        BasicDBObject query = new BasicDBObject("type", type.getSimpleName());
+
+        try (DBCursor cursor = Database.devices().find(query)) {
+            for (DBObject dbObj : cursor) {
+                devices.add(createDeviceFromDbObject(type, (BasicDBObject) dbObj));
+            }
+        }
+
+        return devices;
     }
 
     /**
