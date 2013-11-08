@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 import se.raxa.server.Database;
 import se.raxa.server.devices.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
+import se.raxa.server.exceptions.NotFoundException;
 
 /**
  * @author Rasmus Eneman
@@ -26,7 +27,7 @@ public abstract class Device {
      */
     public static Device createDeviceFromDbObject(BasicDBObject obj) throws ClassCreationException {
         String type = (String) ((BasicDBList) obj.get("type")).get(0);
-        Device device = null;
+        Device device;
         try {
             device = Devices.getClasses().get(type).newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
@@ -43,9 +44,41 @@ public abstract class Device {
      *
      * @throws ClassCreationException
      */
-    public static <T extends Device> T createDeviceFromDbObject(Class<T> clazz, BasicDBObject obj) throws
+    public static <T extends Device> T createDeviceFromDbObject(@SuppressWarnings("UnusedParameters") Class<T> clazz, BasicDBObject obj) throws
             ClassCreationException {
+        //noinspection unchecked
         return (T) createDeviceFromDbObject(obj);
+    }
+
+    /**
+     * Gets a Device from the database using its id.
+     *
+     * @param clazz The class of the Device
+     * @param id The MongoDB id of the Device
+     *
+     * @throws NotFoundException
+     * @throws ClassCreationException
+     */
+    public static <T extends Device> T getDeviceById(Class<T> clazz, ObjectId id) throws NotFoundException,
+            ClassCreationException {
+        BasicDBObject query = new BasicDBObject("_id", id);
+        query = (BasicDBObject) Database.devices().findOne(query);
+        if (query == null) {
+            throw new NotFoundException(String.format("No device with the id '%s' found", id.toString()));
+        }
+        return createDeviceFromDbObject(clazz, query);
+    }
+
+    /**
+     * Gets a Device from the database using its id.
+     *
+     * @param id The MongoDB id of the Device
+     *
+     * @throws NotFoundException
+     * @throws ClassCreationException
+     */
+    public static Device getDeviceById(ObjectId id) throws NotFoundException, ClassCreationException {
+        return getDeviceById(Device.class, id);
     }
 
     /**
