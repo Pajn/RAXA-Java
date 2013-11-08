@@ -1,7 +1,10 @@
 package se.raxa.plugin.nexasl;
 
+import se.raxa.plugin.tellsticknet.TellstickNet;
 import se.raxa.server.devices.helpers.Lamp;
 import se.raxa.server.devices.helpers.Status;
+import se.raxa.server.exceptions.ClassCreationException;
+import se.raxa.server.exceptions.StatusChangeException;
 
 /**
  * @author Rasmus Eneman
@@ -34,17 +37,29 @@ public class NexaSLOnOff extends Lamp implements NexaSL {
 
     /**
      * Called when the lamp should turn on
+     *
+     * @throws StatusChangeException
      */
     @Override
-    public void turnOn() {
-        //TODO
+    public void turnOn() throws StatusChangeException {
+        try {
+            getConnector(TellstickNet.class).send(encodeMessage(Status.On));
+        } catch (ClassCreationException e) {
+            throw new StatusChangeException("error when getting connector", e);
+        }
     }
 
     /**
      * Called when the lamp should turn off
+     *
+     * @throws StatusChangeException
      */
     @Override
-    public void turnOff() {
-        //TODO
+    public void turnOff() throws StatusChangeException {
+        try {
+            getConnector(TellstickNet.class).send(encodeMessage(Status.Off));
+        } catch (ClassCreationException e) {
+            throw new StatusChangeException("error when getting connector", e);
+        }
     }
 }
