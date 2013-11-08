@@ -1,5 +1,7 @@
 package se.raxa.server.devices.helpers;
 
+import se.raxa.server.exceptions.StatusChangeException;
+
 /**
  * @author Rasmus Eneman
  */
@@ -24,6 +26,8 @@ public interface DimmableByLevel {
 
     /**
      * Set the dim level
+     *
+     * @throws StatusChangeException
      */
-    public abstract void setDimLevel(int level);
+    public abstract void setDimLevel(int level) throws StatusChangeException;
 }
