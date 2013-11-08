@@ -53,6 +53,6 @@ public abstract class Device {
      * Save to the database
      */
     public final void save() {
-        Database.devices.save(obj);
+        Database.devices().save(obj);
     }
 }
