@@ -28,31 +28,30 @@ public abstract class Device {
     /**
      * Create a Device object from a database object
      *
-     * @throws se.raxa.server.exceptions.ClassCreationException
+     * @param clazz The class of the Device
+     *
+     * @throws ClassCreationException
      */
-    public static Device createDeviceFromDbObject(BasicDBObject obj) throws ClassCreationException {
-        String type = (String) ((BasicDBList) obj.get("type")).get(0);
-        Device device;
+    public static <T extends Device> T createDeviceFromDbObject(Class<T> clazz, BasicDBObject obj) throws
+            ClassCreationException {
+        T device;
         try {
-            device = Devices.getClasses().get(type).newInstance();
+            device = clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new ClassCreationException(String.format("Error when creating Device from type '%s'", type), e);
+            throw new ClassCreationException(String.format("Error when creating Device from class '%s'", clazz.getCanonicalName()), e);
         }
-        device.obj = obj;
+        ((Device) device).obj = obj;
         return device;
     }
 
     /**
      * Create a Device object from a database object
      *
-     * @param clazz The class of the Device
-     *
-     * @throws ClassCreationException
+     * @throws se.raxa.server.exceptions.ClassCreationException
      */
-    public static <T extends Device> T createDeviceFromDbObject(@SuppressWarnings("UnusedParameters") Class<T> clazz, BasicDBObject obj) throws
-            ClassCreationException {
-        //noinspection unchecked
-        return (T) createDeviceFromDbObject(obj);
+    public static Device createDeviceFromDbObject(BasicDBObject obj) throws ClassCreationException {
+        String type = (String) ((BasicDBList) obj.get("type")).get(0);
+        return createDeviceFromDbObject(Devices.getClasses().get(type), obj);
     }
 
     /**
