@@ -49,7 +49,7 @@ public class NexaSLOnOff extends Lamp implements NexaSL {
      */
     @Override
     public long getSenderID() {
-        return (byte) getDbObj().getLong("sender_id");
+        return getDbObj().getLong("sender_id");
     }
 
     /**
