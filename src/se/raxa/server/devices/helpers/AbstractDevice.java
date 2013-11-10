@@ -19,6 +19,10 @@ public abstract class AbstractDevice implements Device {
         dbObject.put("type", getType());
     }
 
+    protected AbstractDevice(BasicDBObject dbObject) {
+        this.dbObject = dbObject;
+    }
+
     /**
      * @return The inner DBObject
      */

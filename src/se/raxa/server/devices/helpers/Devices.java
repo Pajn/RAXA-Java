@@ -31,11 +31,15 @@ public class Devices {
             ClassCreationException {
         T device;
         try {
-            device = clazz.getConstructor().newInstance();
+            device = clazz.getConstructor(BasicDBObject.class).newInstance(obj);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new ClassCreationException(String.format("Error when creating Device from class '%s'", clazz.getCanonicalName()), e);
+            try {
+                device = clazz.getConstructor().newInstance();
+                device.setDBObj(obj);
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e2) {
+                throw new ClassCreationException(String.format("Error when creating Device from class '%s'", clazz.getCanonicalName()), e2);
+            }
         }
-        device.setDBObj(obj);
         return device;
     }
 
