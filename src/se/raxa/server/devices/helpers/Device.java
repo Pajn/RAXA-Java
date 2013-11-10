@@ -148,7 +148,7 @@ public abstract class Device {
     public static <T extends Device> List<T> getDevicesByType(Class<T> type) throws ClassCreationException {
         List<T> devices = new ArrayList<>();
 
-        BasicDBObject query = new BasicDBObject("type", type.getSimpleName());
+        DBObject query = new BasicDBObject("type", type.getSimpleName());
 
         try (DBCursor cursor = Database.devices().find(query)) {
             for (DBObject dbObj : cursor) {
