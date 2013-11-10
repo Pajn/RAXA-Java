@@ -9,6 +9,7 @@ public interface NexaSL {
     static final String ONE = String.format("%c%c", (char) 29, (char) 17);
     static final String ZERO = String.format("%c%c", (char) 29, (char) 92);
     static final int key = 7;
+    int UNIQUE_SENDER_ID_MAX = 67234433;
 
     /**
      * @return The unique sender id of the device

@@ -15,6 +15,11 @@ public class Database {
 
     private Database() {}
 
+    /**
+     * Connects to the database
+     *
+     * @param mongoClient to use for connection
+     */
     public static void connect(MongoClient mongoClient) {
         if (obj == null) {
             obj = new Database();

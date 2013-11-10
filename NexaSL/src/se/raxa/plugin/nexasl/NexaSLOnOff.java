@@ -27,7 +27,7 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
         BasicDBObject query;
 
         do {
-            rand = r.nextInt(67234433);
+            rand = r.nextInt(UNIQUE_SENDER_ID_MAX);
 
             query = new BasicDBObject("type", "NexaSL");
             query.put("sender_id", rand);

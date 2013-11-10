@@ -12,7 +12,7 @@ import static junit.framework.Assert.assertEquals;
  * @author Rasmus Eneman
  */
 public class NexaSLTest {
-    private static TestNexaSL testNexaSL = new TestNexaSL();
+    private static NexaSL testNexaSL = new TestNexaSL();
 
     @Test
     public void testEncodeMessageOn() throws Exception {
