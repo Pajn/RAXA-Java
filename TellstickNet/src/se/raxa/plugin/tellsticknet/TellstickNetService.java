@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 /**
  * A service which handles all communication with the tellsticks.
@@ -137,14 +138,15 @@ public class TellstickNetService extends Thread {
         private static final int NUMBER_OF_TRIES = 20;
         private static final int TIME_FOR_RESPONSE = 150;
 
-        private static Map<String, InetAddress> tellsticks = new HashMap<>();
+        private static final Map<String, InetAddress> tellsticks = new HashMap<>();
+        private static final Pattern SEPARATOR = Pattern.compile(":");
 
         /**
          * Get the InetAddress of a tellstick. If not in the cache it will search the network
          *
          * @param code It's unique activation code
          *
-         * @throws NotFoundException If the tellstick can't be found
+         * @throws se.raxa.server.exceptions.NotFoundException If the tellstick can't be found
          */
         public static InetAddress get(String code) throws NotFoundException {
             InetAddress address;
@@ -177,7 +179,7 @@ public class TellstickNetService extends Thread {
          * @param address The InetAddress to the tellstick
          */
         public static void put(String identificationHeader, InetAddress address) {
-            String[] pieces = identificationHeader.split(":");
+            String[] pieces = SEPARATOR.split(identificationHeader);
             tellsticks.put(pieces[2], address);
         }
     }

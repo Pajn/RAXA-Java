@@ -13,7 +13,7 @@ public class TellstickNet extends AbstractDevice implements Connector {
      */
     @Override
     public String[] getType() {
-        return new String[] {"tellsticknet", "Connector"};
+        return new String[] {"TellstickNet", "Connector"};
     }
 
     /**

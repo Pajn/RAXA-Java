@@ -4,8 +4,7 @@ import se.raxa.server.devices.Connector;
 import se.raxa.server.devices.Lamp;
 import se.raxa.server.exceptions.ClassCreationException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Rasmus Eneman
@@ -26,12 +25,12 @@ public class Lamps {
     public static <T extends Lamp> T create(Class<T> clazz, String name, Connector connector) throws
             ClassCreationException {
         try {
-            T obj = clazz.newInstance();
+            T obj = clazz.getConstructor().newInstance();
             obj.setName(name);
             obj.getDBObj().put("connector", connector.getDBObj());
             obj.onCreate();
             return obj;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new ClassCreationException(String.format("Error when creating lamp from '%s'", clazz.getSimpleName()), e);
         }
     }

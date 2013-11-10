@@ -1,7 +1,6 @@
 package se.raxa.server.plugins.implementions;
 
 import se.raxa.server.devices.Connector;
-import se.raxa.server.devices.helpers.Devices;
 
 import java.util.HashMap;
 import java.util.Map;

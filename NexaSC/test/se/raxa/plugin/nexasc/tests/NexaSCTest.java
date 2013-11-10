@@ -10,7 +10,7 @@ import static junit.framework.Assert.assertEquals;
  * @author Rasmus Eneman
  */
 public class NexaSCTest {
-    private static NexaSC testNexaSC = new TestNexaSC();
+    private static final NexaSC testNexaSC = new TestNexaSC();
 
     @Test
     public void testGetCodeSwitchTuple() throws Exception {

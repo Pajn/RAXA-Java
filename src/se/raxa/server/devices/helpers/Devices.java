@@ -11,6 +11,7 @@ import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
 import se.raxa.server.plugins.implementions.DevicePlugins;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,8 @@ public class Devices {
             ClassCreationException {
         T device;
         try {
-            device = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            device = clazz.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new ClassCreationException(String.format("Error when creating Device from class '%s'", clazz.getCanonicalName()), e);
         }
         device.setDBObj(obj);
