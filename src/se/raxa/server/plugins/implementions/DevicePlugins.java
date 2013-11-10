@@ -1,6 +1,6 @@
-package se.raxa.server.devices;
+package se.raxa.server.plugins.implementions;
 
-import se.raxa.server.devices.helpers.Device;
+import se.raxa.server.devices.Device;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author Rasmus Eneman
  */
-public class Devices {
+public class DevicePlugins {
     private static final Map<String, Class<? extends Device>> deviceClasses = new HashMap<>();
 
     /**

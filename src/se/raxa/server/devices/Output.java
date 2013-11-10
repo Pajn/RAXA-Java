@@ -1,13 +1,14 @@
-package se.raxa.server.devices.helpers;
+package se.raxa.server.devices;
 
 import com.mongodb.BasicDBObject;
 import se.raxa.server.exceptions.ClassCreationException;
 
+import static se.raxa.server.devices.helpers.Devices.createDeviceFromDbObject;
+
 /**
  * @author Rasmus Eneman
  */
-public abstract class Output extends Device {
-
+public interface Output extends Device {
     /**
      * @param clazz The class of the Connector
      *
@@ -15,8 +16,8 @@ public abstract class Output extends Device {
      *
      * @throws se.raxa.server.exceptions.ClassCreationException
      */
-    public <T extends Connector> T getConnector(Class<T> clazz) throws ClassCreationException {
-        Object obj = getDbObj().get("connector");
+    public default <T extends Connector> T getConnector(Class<T> clazz) throws ClassCreationException {
+        Object obj = getDBObj().get("connector");
         if (obj == null) {
             return null;
         }
@@ -28,7 +29,7 @@ public abstract class Output extends Device {
      *
      * @throws ClassCreationException
      */
-    public Connector getConnector() throws ClassCreationException {
+    public default Connector getConnector() throws ClassCreationException {
         return getConnector(Connector.class);
     }
 }

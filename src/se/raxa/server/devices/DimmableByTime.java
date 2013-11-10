@@ -1,11 +1,11 @@
-package se.raxa.server.devices.helpers;
+package se.raxa.server.devices;
 
 import se.raxa.server.exceptions.StatusChangeException;
 
 /**
  * @author Rasmus Eneman
  */
-public interface DimmableByTime {
+public interface DimmableByTime extends Lamp {
 
     /**
      * Called when dimming should be initiated

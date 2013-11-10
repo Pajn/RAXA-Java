@@ -4,7 +4,7 @@ import com.mongodb.BasicDBObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import se.raxa.plugin.nexasl.NexaSLDim;
-import se.raxa.server.devices.helpers.Device;
+import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ public class NexaSLDimTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws ClassCreationException {
-        nexaSLDim = Device.createDeviceFromDbObject(NexaSLDim.class, new BasicDBObject());
+        nexaSLDim = Devices.createDeviceFromDbObject(NexaSLDim.class, new BasicDBObject());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class NexaSLDimTest {
 
     @Test
     public void testGetDimLevel() throws Exception {
-        nexaSLDim.getDbObj().put("dim_level", 12);
+        nexaSLDim.getDBObj().put("dim_level", 12);
         assertEquals(12, nexaSLDim.getDimLevel());
     }
 }

@@ -1,14 +1,16 @@
-package se.raxa.server.devices.helpers;
+package se.raxa.server.devices;
+
+import se.raxa.server.devices.helpers.*;
 
 /**
  * @author Rasmus Eneman
  */
-public abstract class Connector extends Device {
+public interface Connector extends Device {
 
     /**
      * @return False if it have wrong version or in any other way can't be used
      */
-    public boolean isUsable() {
+    public default boolean isUsable() {
         return true;
     }
 }

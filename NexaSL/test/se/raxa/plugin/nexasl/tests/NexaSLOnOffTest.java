@@ -4,7 +4,7 @@ import com.mongodb.BasicDBObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import se.raxa.plugin.nexasl.NexaSLOnOff;
-import se.raxa.server.devices.helpers.Device;
+import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 
@@ -20,7 +20,7 @@ public class NexaSLOnOffTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws ClassCreationException {
-        nexaSLOnOff = Device.createDeviceFromDbObject(NexaSLOnOff.class, new BasicDBObject("sender_id", 81234));
+        nexaSLOnOff = Devices.createDeviceFromDbObject(NexaSLOnOff.class, new BasicDBObject("sender_id", 81234));
     }
 
     @Test
@@ -35,9 +35,9 @@ public class NexaSLOnOffTest {
 
     @Test
     public void testIsTurnedOn() throws Exception {
-        nexaSLOnOff.getDbObj().put("status", Status.On.ordinal());
+        nexaSLOnOff.getDBObj().put("status", Status.On.ordinal());
         assertEquals(true, nexaSLOnOff.isTurnedOn());
-        nexaSLOnOff.getDbObj().put("status", Status.Off.ordinal());
+        nexaSLOnOff.getDBObj().put("status", Status.Off.ordinal());
         assertEquals(false, nexaSLOnOff.isTurnedOn());
     }
 }

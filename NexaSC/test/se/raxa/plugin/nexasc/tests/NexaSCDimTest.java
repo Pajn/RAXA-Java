@@ -4,7 +4,7 @@ import com.mongodb.BasicDBObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import se.raxa.plugin.nexasc.NexaSCDim;
-import se.raxa.server.devices.helpers.Device;
+import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ public class NexaSCDimTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws ClassCreationException {
-        nexaSCDim = Device.createDeviceFromDbObject(NexaSCDim.class, new BasicDBObject());
+        nexaSCDim = Devices.createDeviceFromDbObject(NexaSCDim.class, new BasicDBObject());
     }
 
     @Test

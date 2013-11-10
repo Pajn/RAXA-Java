@@ -3,7 +3,8 @@ package se.raxa.plugin.nexasl;
 import com.mongodb.BasicDBObject;
 import se.raxa.plugin.tellsticknet.TellstickNet;
 import se.raxa.server.Database;
-import se.raxa.server.devices.helpers.Lamp;
+import se.raxa.server.devices.Lamp;
+import se.raxa.server.devices.helpers.AbstractDevice;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
@@ -13,14 +14,14 @@ import java.util.Random;
 /**
  * @author Rasmus Eneman
  */
-public class NexaSLOnOff extends Lamp implements NexaSL {
+public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
 
     /**
      * Called when a new object is created
      * Generates a unique random id as sender id
      */
     @Override
-    protected void onCreate() {
+    public void onCreate() {
         Random r = new Random();
         int rand;
         BasicDBObject query;
@@ -33,7 +34,7 @@ public class NexaSLOnOff extends Lamp implements NexaSL {
 
         } while (Database.devices().findOne(query) != null);
 
-        this.getDbObj().put("sender_id", rand);
+        this.getDBObj().put("sender_id", rand);
     }
 
     /**
@@ -49,7 +50,7 @@ public class NexaSLOnOff extends Lamp implements NexaSL {
      */
     @Override
     public long getSenderID() {
-        return getDbObj().getLong("sender_id");
+        return getDBObj().getLong("sender_id");
     }
 
     /**
@@ -57,7 +58,7 @@ public class NexaSLOnOff extends Lamp implements NexaSL {
      */
     @Override
     public boolean isTurnedOn() {
-        return getDbObj().getInt("status") != Status.Off.ordinal();
+        return getDBObj().getInt("status") != Status.Off.ordinal();
     }
 
     /**

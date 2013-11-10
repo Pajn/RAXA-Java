@@ -1,8 +1,8 @@
 package se.raxa.plugin.nexasl;
 
 import se.raxa.plugin.tellsticknet.TellstickNet;
-import se.raxa.server.devices.helpers.DimmableByLevel;
-import se.raxa.server.devices.helpers.DimmableByTime;
+import se.raxa.server.devices.DimmableByLevel;
+import se.raxa.server.devices.DimmableByTime;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
@@ -33,7 +33,7 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
      */
     @Override
     public int getDimLevel() {
-        return getDbObj().getInt("dim_level", 0);
+        return getDBObj().getInt("dim_level", 0);
     }
 
     /**

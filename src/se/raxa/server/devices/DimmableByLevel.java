@@ -1,11 +1,11 @@
-package se.raxa.server.devices.helpers;
+package se.raxa.server.devices;
 
 import se.raxa.server.exceptions.StatusChangeException;
 
 /**
  * @author Rasmus Eneman
  */
-public interface DimmableByLevel {
+public interface DimmableByLevel extends Lamp {
 
     /**
      * @return The highest supported dim level

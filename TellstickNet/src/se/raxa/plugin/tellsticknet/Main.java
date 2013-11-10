@@ -4,7 +4,7 @@ import se.raxa.server.plugins.Plugin;
 
 import java.net.SocketException;
 
-import static se.raxa.server.devices.Connectors.registerPlugin;
+import static se.raxa.server.plugins.implementions.ConnectorPlugins.registerPlugin;
 
 /**
  * @author Rasmus Eneman

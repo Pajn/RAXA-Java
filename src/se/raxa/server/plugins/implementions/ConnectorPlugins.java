@@ -1,6 +1,7 @@
-package se.raxa.server.devices;
+package se.raxa.server.plugins.implementions;
 
-import se.raxa.server.devices.helpers.Connector;
+import se.raxa.server.devices.Connector;
+import se.raxa.server.devices.helpers.Devices;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * @author Rasmus Eneman
  */
-public class Connectors {
+public class ConnectorPlugins {
     private static final Map<String, Class<? extends Connector>> connectorClasses = new HashMap<>();
 
     /**
@@ -25,7 +26,7 @@ public class Connectors {
      * @param connectorClass The class of the plugin
      */
     public static <T extends Connector> void registerPlugin(String name, Class<T> connectorClass) {
-        Devices.registerPlugin(name, connectorClass);
+        DevicePlugins.registerPlugin(name, connectorClass);
         connectorClasses.put(name, connectorClass);
     }
 }

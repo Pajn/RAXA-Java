@@ -1,6 +1,7 @@
-package se.raxa.server.devices;
+package se.raxa.server.plugins.implementions;
 
-import se.raxa.server.devices.helpers.Lamp;
+import se.raxa.server.devices.Lamp;
+import se.raxa.server.devices.helpers.Devices;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * @author Rasmus Eneman
  */
-public class Lamps {
+public class LampPlugins {
     private static final Map<String, Class<? extends Lamp>> lampClasses = new HashMap<>();
 
     /**
@@ -25,7 +26,7 @@ public class Lamps {
      * @param lampClass The class of the plugin
      */
     public static <T extends Lamp> void registerPlugin(String name, Class<T> lampClass) {
-        Devices.registerPlugin(name, lampClass);
+        DevicePlugins.registerPlugin(name, lampClass);
         lampClasses.put(name, lampClass);
     }
 }

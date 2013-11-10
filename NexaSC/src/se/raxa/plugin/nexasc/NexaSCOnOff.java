@@ -1,7 +1,8 @@
 package se.raxa.plugin.nexasc;
 
 import se.raxa.plugin.tellsticknet.TellstickNet;
-import se.raxa.server.devices.helpers.Lamp;
+import se.raxa.server.devices.Lamp;
+import se.raxa.server.devices.helpers.AbstractDevice;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
@@ -9,7 +10,7 @@ import se.raxa.server.exceptions.StatusChangeException;
 /**
  * @author Rasmus Eneman
  */
-public class NexaSCOnOff extends Lamp implements NexaSC {
+public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
 
     /**
      * @return An array of types, ordered by position in tree
@@ -24,7 +25,7 @@ public class NexaSCOnOff extends Lamp implements NexaSC {
      */
     @Override
     public byte getHouse() {
-        return (byte) getDbObj().getInt("house");
+        return (byte) getDBObj().getInt("house");
     }
 
     /**
@@ -32,7 +33,7 @@ public class NexaSCOnOff extends Lamp implements NexaSC {
      */
     @Override
     public byte getDevice() {
-        return (byte) getDbObj().getInt("device");
+        return (byte) getDBObj().getInt("device");
     }
 
     /**
@@ -41,8 +42,8 @@ public class NexaSCOnOff extends Lamp implements NexaSC {
      * @param device The device code
      */
     public void setHouseDevice(byte house, byte device) {
-        getDbObj().put("house", house);
-        getDbObj().put("device", device);
+        getDBObj().put("house", house);
+        getDBObj().put("device", device);
     }
 
     /**
@@ -50,7 +51,7 @@ public class NexaSCOnOff extends Lamp implements NexaSC {
      */
     @Override
     public boolean isTurnedOn() {
-        return getDbObj().getInt("status") != Status.Off.ordinal();
+        return getDBObj().getInt("status") != Status.Off.ordinal();
     }
 
     /**

@@ -1,11 +1,12 @@
 package se.raxa.plugin.tellsticknet;
 
-import se.raxa.server.devices.helpers.Connector;
+import se.raxa.server.devices.Connector;
+import se.raxa.server.devices.helpers.AbstractDevice;
 
 /**
  * @author Rasmus Eneman
  */
-public class TellstickNet extends Connector {
+public class TellstickNet extends AbstractDevice implements Connector {
 
     /**
      * @return An array of types, ordered by position in tree
@@ -19,14 +20,14 @@ public class TellstickNet extends Connector {
      * @return The unique activation code
      */
     public String getCode() {
-        return getDbObj().getString("code");
+        return getDBObj().getString("code");
     }
 
     /**
      * @return The firmware version
      */
     public String getVersion() {
-        return getDbObj().getString("version");
+        return getDBObj().getString("version");
     }
 
     /**

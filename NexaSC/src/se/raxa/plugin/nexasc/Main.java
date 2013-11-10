@@ -2,7 +2,7 @@ package se.raxa.plugin.nexasc;
 
 import se.raxa.server.plugins.Plugin;
 
-import static se.raxa.server.devices.Lamps.registerPlugin;
+import static se.raxa.server.plugins.implementions.LampPlugins.registerPlugin;
 
 /**
  * @author Rasmus Eneman

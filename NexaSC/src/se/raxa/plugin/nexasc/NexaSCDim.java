@@ -1,7 +1,7 @@
 package se.raxa.plugin.nexasc;
 
 import se.raxa.plugin.tellsticknet.TellstickNet;
-import se.raxa.server.devices.helpers.DimmableByTime;
+import se.raxa.server.devices.DimmableByTime;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;

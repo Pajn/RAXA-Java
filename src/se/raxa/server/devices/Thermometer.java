@@ -1,9 +1,9 @@
-package se.raxa.server.devices.helpers;
+package se.raxa.server.devices;
 
 /**
  * @author Rasmus Eneman
  */
-public abstract class Thermometer extends Sensor {
+public interface Thermometer extends Sensor {
 
     /**
      * @return The resolution of the thermometer in degrees celsius

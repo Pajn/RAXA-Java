@@ -6,9 +6,10 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import org.bson.types.ObjectId;
 import se.raxa.server.Database;
-import se.raxa.server.devices.Devices;
+import se.raxa.server.devices.Device;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
+import se.raxa.server.plugins.implementions.DevicePlugins;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,21 +17,14 @@ import java.util.List;
 /**
  * @author Rasmus Eneman
  */
-public abstract class Device {
-    private BasicDBObject obj;
-
-    protected Device() {
-        obj = new BasicDBObject();
-        obj.put("_id", new ObjectId());
-        obj.put("type", getType());
-    }
+public class Devices {
 
     /**
      * Create a Device object from a database object
      *
      * @param clazz The class of the Device
      *
-     * @throws ClassCreationException
+     * @throws se.raxa.server.exceptions.ClassCreationException
      */
     public static <T extends Device> T createDeviceFromDbObject(Class<T> clazz, BasicDBObject obj) throws
             ClassCreationException {
@@ -40,7 +34,7 @@ public abstract class Device {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new ClassCreationException(String.format("Error when creating Device from class '%s'", clazz.getCanonicalName()), e);
         }
-        ((Device) device).obj = obj;
+        device.setDBObj(obj);
         return device;
     }
 
@@ -51,7 +45,7 @@ public abstract class Device {
      */
     public static Device createDeviceFromDbObject(BasicDBObject obj) throws ClassCreationException {
         String type = (String) ((BasicDBList) obj.get("type")).get(0);
-        return createDeviceFromDbObject(Devices.getClasses().get(type), obj);
+        return createDeviceFromDbObject(DevicePlugins.getClasses().get(type), obj);
     }
 
     /**
@@ -62,7 +56,7 @@ public abstract class Device {
      *
      * @return A BasicDBObject for that device
      */
-    private static BasicDBObject queryDatabaseSafe(String key, Object value) {
+    public static BasicDBObject queryDatabaseSafe(String key, Object value) {
         BasicDBObject query = new BasicDBObject(key, value);
         query = (BasicDBObject) Database.devices().findOne(query);
         return query;
@@ -76,9 +70,9 @@ public abstract class Device {
      *
      * @return A BasicDBObject for that device
      *
-     * @throws NotFoundException If no device where found
+     * @throws se.raxa.server.exceptions.NotFoundException If no device where found
      */
-    private static BasicDBObject queryDatabase(String key, Object value) throws NotFoundException {
+    public static BasicDBObject queryDatabase(String key, Object value) throws NotFoundException {
         BasicDBObject query = queryDatabaseSafe(key, value);
         if (query == null) {
             throw new NotFoundException(String.format("No device with the %s '%s' found", key, value.toString()));
@@ -157,50 +151,5 @@ public abstract class Device {
         }
 
         return devices;
-    }
-
-    /**
-     * @return The inner DBObject
-     */
-    public BasicDBObject getDbObj() {
-        return obj;
-    }
-
-    /**
-     * @return The unique id
-     */
-    public ObjectId getId() {
-        return obj.getObjectId("_id");
-    }
-
-    /**
-     * @return The name
-     */
-    public String getName() {
-        return obj.getString("name");
-    }
-
-    /**
-     * @param name The name to set
-     *
-     * @throws IllegalArgumentException If the name already is in use
-     */
-    public void setName(String name) throws IllegalArgumentException {
-        if (queryDatabaseSafe("name", name) != null) {
-            throw new IllegalArgumentException(String.format("The name '%s' is already in use", name));
-        }
-        obj.put("name", name);
-    }
-
-    /**
-     * @return An array of types, ordered by position in tree
-     */
-    public abstract String[] getType();
-
-    /**
-     * Save to the database
-     */
-    public final void save() {
-        Database.devices().save(obj);
     }
 }

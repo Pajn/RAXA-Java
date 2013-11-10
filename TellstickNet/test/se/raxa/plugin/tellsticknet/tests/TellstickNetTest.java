@@ -10,7 +10,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import se.raxa.plugin.tellsticknet.TellstickNet;
 import se.raxa.plugin.tellsticknet.TellstickNetService;
-import se.raxa.server.devices.helpers.Device;
+import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
 
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class TellstickNetTest {
         BasicDBObject dbObject = new BasicDBObject();
         dbObject.put("code", "ABCDEF");
         dbObject.put("version", "RAXA1");
-        tellstickNet = Device.createDeviceFromDbObject(TellstickNet.class, dbObject);
+        tellstickNet = Devices.createDeviceFromDbObject(TellstickNet.class, dbObject);
     }
 
     @Test
@@ -51,9 +51,9 @@ public class TellstickNetTest {
     @Test
     public void testIsUsable() throws Exception {
         assertEquals(true, tellstickNet.isUsable());
-        tellstickNet.getDbObj().put("version", "TN2");
+        tellstickNet.getDBObj().put("version", "TN2");
         assertEquals(false, tellstickNet.isUsable());
-        tellstickNet.getDbObj().put("version", "RAXA1");
+        tellstickNet.getDBObj().put("version", "RAXA1");
     }
 
     @Test
