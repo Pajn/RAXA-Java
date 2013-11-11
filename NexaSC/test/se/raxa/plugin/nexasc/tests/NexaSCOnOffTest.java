@@ -10,7 +10,7 @@ import se.raxa.server.exceptions.ClassCreationException;
 
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Rasmus Eneman

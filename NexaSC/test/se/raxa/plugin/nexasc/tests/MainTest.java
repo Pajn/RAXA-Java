@@ -4,7 +4,7 @@ import org.junit.Test;
 import se.raxa.plugin.nexasc.Main;
 import se.raxa.server.plugins.Plugin;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Rasmus Eneman

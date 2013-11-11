@@ -15,7 +15,7 @@ import se.raxa.server.exceptions.ClassCreationException;
 
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Rasmus Eneman
@@ -35,7 +35,7 @@ public class TellstickNetTest {
 
     @Test
     public void testGetType() throws Exception {
-        assertEquals(true, Arrays.equals(new String[]{"tellsticknet", "Connector"}, tellstickNet.getType()));
+        assertEquals(true, Arrays.equals(new String[]{"TellstickNet", "Connector"}, tellstickNet.getType()));
     }
 
     @Test

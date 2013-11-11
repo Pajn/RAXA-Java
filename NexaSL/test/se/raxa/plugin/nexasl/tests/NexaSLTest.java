@@ -6,7 +6,7 @@ import se.raxa.server.devices.helpers.Status;
 
 import java.text.MessageFormat;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Rasmus Eneman
