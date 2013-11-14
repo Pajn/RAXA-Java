@@ -1,0 +1,4 @@
+rootProject.name = 'RAXA'
+println rootProject.projectDir
+
+include 'TellstickNet', 'NexaSC', 'NexaSL'
