@@ -30,5 +30,9 @@ allprojects {
     test {
         scanForTestClasses = false
         exclude '**/*$*.class' // exclude anonymous inner classes
+
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
     }
 }
