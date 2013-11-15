@@ -45,6 +45,7 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
     public void setDimLevel(int level) throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.DimLevel, (byte) level));
+            getDBObj().put("status", Status.On.ordinal());
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }
@@ -59,6 +60,7 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
     public void startDimming() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.Dim));
+            getDBObj().put("status", Status.Dim.ordinal());
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }
@@ -73,6 +75,7 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
     public void stopDimming() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.Dim));
+            getDBObj().put("status", Status.On.ordinal());
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }
