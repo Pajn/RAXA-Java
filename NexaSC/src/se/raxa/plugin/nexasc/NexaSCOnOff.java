@@ -47,17 +47,9 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
     }
 
     /**
-     * @return True if the lamp is turned on
-     */
-    @Override
-    public boolean isTurnedOn() {
-        return getDBObj().getInt("status") != Status.Off.ordinal();
-    }
-
-    /**
      * Called when the lamp should turn on
      *
-     * @throws StatusChangeException
+     * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     @Override
     public void turnOn() throws StatusChangeException {
@@ -71,7 +63,7 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
     /**
      * Called when the lamp should turn off
      *
-     * @throws StatusChangeException
+     * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     @Override
     public void turnOff() throws StatusChangeException {

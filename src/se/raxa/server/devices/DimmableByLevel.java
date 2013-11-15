@@ -27,7 +27,7 @@ public interface DimmableByLevel extends Lamp {
     /**
      * Set the dim level
      *
-     * @throws StatusChangeException
+     * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     public abstract void setDimLevel(int level) throws StatusChangeException;
 }

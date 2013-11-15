@@ -39,7 +39,7 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
     /**
      * Set the dim level
      *
-     * @throws StatusChangeException
+     * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     @Override
     public void setDimLevel(int level) throws StatusChangeException {
@@ -53,10 +53,10 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
     /**
      * Called when dimming should be initiated
      *
-     * @throws StatusChangeException
+     * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     @Override
-    public void StartDimming() throws StatusChangeException {
+    public void startDimming() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.Dim));
         } catch (ClassCreationException e) {
@@ -67,10 +67,10 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
     /**
      * Called when dimming should be stopped
      *
-     * @throws StatusChangeException
+     * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     @Override
-    public void StopDimming() throws StatusChangeException {
+    public void stopDimming() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.Dim));
         } catch (ClassCreationException e) {
