@@ -28,7 +28,7 @@ public class NexaSCDim extends NexaSCOnOff implements DimmableByTime {
     public void startDimming() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.Dim));
-            getDBObj().put("status", Status.Dim.ordinal());
+            getDBObj().put("status", Status.Dim.getValue());
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }
@@ -43,7 +43,7 @@ public class NexaSCDim extends NexaSCOnOff implements DimmableByTime {
     public void stopDimming() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.Dim));
-            getDBObj().put("status", Status.On.ordinal());
+            getDBObj().put("status", Status.On.getValue());
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }

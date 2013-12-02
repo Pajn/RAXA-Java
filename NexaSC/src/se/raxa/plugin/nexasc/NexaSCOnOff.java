@@ -55,7 +55,7 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
     public void turnOn() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.On));
-            getDBObj().put("status", Status.On.ordinal());
+            getDBObj().put("status", Status.On.getValue());
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }
@@ -70,7 +70,7 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
     public void turnOff() throws StatusChangeException {
         try {
             getConnector(TellstickNet.class).send(encodeMessage(Status.Off));
-            getDBObj().put("status", Status.Off.ordinal());
+            getDBObj().put("status", Status.Off.getValue());
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }

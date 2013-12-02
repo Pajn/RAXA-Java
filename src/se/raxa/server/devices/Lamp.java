@@ -17,7 +17,7 @@ public interface Lamp extends Output {
      * @return True if the lamp is turned on
      */
     public default boolean isTurnedOn() {
-        return getDBObj().getInt("status") != Status.Off.ordinal();
+        return getDBObj().getInt("status") != Status.Off.getValue();
     }
 
     /**

@@ -35,9 +35,9 @@ public class NexaSLOnOffTest {
 
     @Test
     public void testIsTurnedOn() throws Exception {
-        nexaSLOnOff.getDBObj().put("status", Status.On.ordinal());
+        nexaSLOnOff.getDBObj().put("status", Status.On.getValue());
         assertEquals(true, nexaSLOnOff.isTurnedOn());
-        nexaSLOnOff.getDBObj().put("status", Status.Off.ordinal());
+        nexaSLOnOff.getDBObj().put("status", Status.Off.getValue());
         assertEquals(false, nexaSLOnOff.isTurnedOn());
     }
 }
