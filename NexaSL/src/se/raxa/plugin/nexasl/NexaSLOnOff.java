@@ -42,7 +42,7 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
      */
     @Override
     public String[] getType() {
-        return new String[] {"NexaSLOnOff", "NexaSL", "Lamp", "Output"};
+        return new String[] {"NexaSLOnOff", "NexaSL", "Lamp", "Executable", "Output"};
     }
 
     /**

@@ -1,12 +1,13 @@
 package se.raxa.server.devices;
 
 import se.raxa.server.devices.helpers.Status;
+import se.raxa.server.exceptions.ExecutionException;
 import se.raxa.server.exceptions.StatusChangeException;
 
 /**
  * @author Rasmus Eneman
  */
-public interface Lamp extends Output {
+public interface Lamp extends Output, Executable {
 
     /**
      * Called when a new object is created
@@ -35,6 +36,22 @@ public interface Lamp extends Output {
                 break;
             default:
                 throw new StatusChangeException("Status not supported");
+        }
+    }
+
+    /**
+     * @param action The action to execute
+     *
+     * @throws ExecutionException If the action could be executed
+     */
+    @Override
+    public default void execute(Object action) throws ExecutionException {
+        try {
+            setStatus(Status.fromInt((Integer) action));
+        } catch (StatusChangeException e) {
+            throw new ExecutionException("action not supported", e);
+        } catch (ClassCastException e) {
+            throw new ExecutionException("action not supported");
         }
     }
 

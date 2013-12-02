@@ -16,7 +16,7 @@ public class NexaSCDim extends NexaSCOnOff implements DimmableByTime {
      */
     @Override
     public String[] getType() {
-        return new String[] {"NexaSCDim", "DimmableByTime", "Lamp", "Output"};
+        return new String[] {"NexaSCDim", "DimmableByTime", "Lamp", "Executable", "Output"};
     }
 
     /**

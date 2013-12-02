@@ -17,7 +17,7 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
      */
     @Override
     public String[] getType() {
-        return new String[] {"NexaSCOnOff", "Lamp", "Output"};
+        return new String[] {"NexaSCOnOff", "Lamp", "Executable", "Output"};
     }
 
     /**
