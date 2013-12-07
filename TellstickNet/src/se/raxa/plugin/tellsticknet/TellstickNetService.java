@@ -6,10 +6,13 @@ import se.raxa.server.exceptions.NotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -22,7 +25,11 @@ public class TellstickNetService extends Thread {
     private static final int BUFFER_SIZE = 2048;
     private static final int TELLSTICK_LISTENING_PORT = 42314;
     private static final int TELLSTICK_SENDING_PORT = 30303;
+    private static final int CACHE_UPDATE_DELAY = 15;
+    private static final int CACHE_TIMEOUT_DELAY = (int)(CACHE_UPDATE_DELAY * 1.25) * (60 * 1000);
+
     private static final Executor EXECUTOR = Executors.newSingleThreadExecutor();
+    private static final ScheduledExecutorService SCHEDULE = Executors.newSingleThreadScheduledExecutor();
 
     private static TellstickNetService tellstickNetService = null;
     private DatagramSocket socket;
@@ -40,11 +47,14 @@ public class TellstickNetService extends Thread {
         tellstickNetService.socket = new DatagramSocket(TELLSTICK_LISTENING_PORT);
         tellstickNetService.start();
 
-        try {
-            find();
-        } catch (MessageDeliveryException e) {
-            // Silently consume and live on
-        }
+        SCHEDULE.scheduleAtFixedRate(() -> {
+            try {
+                find();
+            } catch (MessageDeliveryException e) {
+                // Silently consume and live on
+            }
+            Tellsticks.removeOld();
+        }, 0, CACHE_UPDATE_DELAY, TimeUnit.MINUTES);
     }
 
     /**
@@ -138,7 +148,7 @@ public class TellstickNetService extends Thread {
         private static final int NUMBER_OF_TRIES = 20;
         private static final int TIME_FOR_RESPONSE = 150;
 
-        private static final Map<String, InetAddress> tellsticks = new HashMap<>();
+        private static final Map<String, Tellstick> tellsticks = new HashMap<>();
         private static final Pattern SEPARATOR = Pattern.compile(":");
 
         /**
@@ -151,7 +161,7 @@ public class TellstickNetService extends Thread {
         public static InetAddress get(String code) throws NotFoundException {
             InetAddress address;
             for (int i = 0; i < NUMBER_OF_TRIES; i++) {
-                address = tellsticks.get(code);
+                address = tellsticks.get(code).address;
 
                 if (address != null) {
                     return address;
@@ -180,7 +190,37 @@ public class TellstickNetService extends Thread {
          */
         public static void put(String identificationHeader, InetAddress address) {
             String[] pieces = SEPARATOR.split(identificationHeader);
-            tellsticks.put(pieces[2], address);
+            tellsticks.put(pieces[2], new Tellstick(address));
+        }
+
+        /**
+         * Clear timed out tellsticks
+         */
+        public static void removeOld() {
+            for (Map.Entry<String, Tellstick> entry : tellsticks.entrySet()) {
+                if (entry.getValue().isOld()) {
+                    tellsticks.remove(entry.getKey());
+                }
+            }
+        }
+
+        private static class Tellstick {
+            private static final Date date = new Date();
+
+            public InetAddress address;
+            private final long time;
+
+            public Tellstick(InetAddress address) {
+                this.address = address;
+                this.time = date.getTime();
+            }
+
+            /**
+             * Check if this object have timed out and if so remove itself from the list
+             */
+            public boolean isOld() {
+                return date.getTime() - time > CACHE_TIMEOUT_DELAY;
+            }
         }
     }
 }
