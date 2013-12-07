@@ -1,5 +1,8 @@
 package se.raxa.plugin.tellsticknet;
 
+import com.mongodb.BasicDBObject;
+import se.raxa.server.Database;
+import se.raxa.server.devices.Device;
 import se.raxa.server.exceptions.MessageDeliveryException;
 import se.raxa.server.exceptions.NotFoundException;
 
@@ -77,7 +80,7 @@ public class TellstickNetService extends Thread {
 
             message = new String(packet.getData());
 
-            if (message.startsWith("TellstickNet")) {
+            if (message.startsWith("TellStickNet")) {
                 Tellsticks.put(message, packet.getAddress());
             }
         }
@@ -191,6 +194,15 @@ public class TellstickNetService extends Thread {
         public static void put(String identificationHeader, InetAddress address) {
             String[] pieces = SEPARATOR.split(identificationHeader);
             tellsticks.put(pieces[2], new Tellstick(address));
+
+            BasicDBObject query = new BasicDBObject("type", "TellstickNet");
+            query.put("code", pieces[2]);
+            query = (BasicDBObject) Database.devices().findOne(query);
+            if (query == null) {
+                Device device = new TellstickNet();
+                device.getDBObj().put("code", pieces[2]);
+                device.save();
+            }
         }
 
         /**
