@@ -7,10 +7,41 @@ import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
 
+import java.util.Map;
+
 /**
  * @author Rasmus Eneman
  */
 public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
+
+    /**
+     * Called when a new object is created
+     *
+     * @param kwargs A map with arguments for creation
+     *
+     * @throws ClassCreationException If the class somehow can't be created
+     * @throws IllegalArgumentException If at least one of the kwargs are invalid (missing or illegal value)
+     */
+    @Override
+    public void onCreate(Map<String, String> kwargs) throws ClassCreationException, IllegalArgumentException {
+        Lamp.super.onCreate(kwargs);
+
+        byte house;
+        try {
+            house = Byte.parseByte(kwargs.get("house"));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("house must be a integer between 0 and 15");
+        }
+
+        byte device;
+        try {
+            device = Byte.parseByte(kwargs.get("device"));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("device must be a integer between 0 and 15");
+        }
+
+        setHouseDevice(house, device);
+    }
 
     /**
      * @return An array of types, ordered by position in tree
@@ -41,7 +72,14 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
      * @param house The house code
      * @param device The device code
      */
-    public void setHouseDevice(byte house, byte device) {
+    public void setHouseDevice(byte house, byte device) throws IllegalArgumentException {
+        if (house < 0 || house > 15) {
+            throw new IllegalArgumentException("house must be a integer between 0 and 15");
+        }
+        if (device < 0 || device > 15) {
+            throw new IllegalArgumentException("device must be a integer between 0 and 15");
+        }
+
         getDBObj().put("house", house);
         getDBObj().put("device", device);
     }

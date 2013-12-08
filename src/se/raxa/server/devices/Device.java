@@ -2,11 +2,24 @@ package se.raxa.server.devices;
 
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
+import se.raxa.server.exceptions.ClassCreationException;
+
+import java.util.Map;
 
 /**
  * @author Rasmus Eneman
  */
 public interface Device {
+
+    /**
+     * Called when a new object is created
+     *
+     * @param kwargs A map with arguments for creation
+     *
+     * @throws ClassCreationException If the class somehow can't be created
+     * @throws IllegalArgumentException If at least one of the kwargs are invalid (missing or illegal value)
+     */
+    public default void onCreate(Map<String, String> kwargs) throws ClassCreationException, IllegalArgumentException {}
 
     /**
      * @return The inner DBObject

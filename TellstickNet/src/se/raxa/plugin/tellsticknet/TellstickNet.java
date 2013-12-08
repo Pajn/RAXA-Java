@@ -2,11 +2,27 @@ package se.raxa.plugin.tellsticknet;
 
 import se.raxa.server.devices.Connector;
 import se.raxa.server.devices.helpers.AbstractDevice;
+import se.raxa.server.exceptions.ClassCreationException;
+
+import java.util.Map;
 
 /**
  * @author Rasmus Eneman
  */
 public class TellstickNet extends AbstractDevice implements Connector {
+
+    /**
+     * Called when a new object is created
+     * Always throws ClassCreationException
+     *
+     * @param kwargs A map with arguments for creation
+     *
+     * @throws ClassCreationException If the class somehow can't be created
+     */
+    @Override
+    public void onCreate(Map<String, String> kwargs) throws ClassCreationException {
+        throw new ClassCreationException("Class can't be manually created");
+    }
 
     /**
      * @return An array of types, ordered by position in tree

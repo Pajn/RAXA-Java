@@ -9,6 +9,7 @@ import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
 
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -19,9 +20,16 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
     /**
      * Called when a new object is created
      * Generates a unique random id as sender id
+     *
+     * @param kwargs A map with arguments for creation
+     *
+     * @throws ClassCreationException If the class somehow can't be created
+     * @throws IllegalArgumentException If at least one of the kwargs are invalid (missing or illegal value)
      */
     @Override
-    public void onCreate() {
+    public void onCreate(Map<String, String> kwargs) throws ClassCreationException {
+        Lamp.super.onCreate(kwargs);
+
         Random r = new Random();
         int rand;
         BasicDBObject query;

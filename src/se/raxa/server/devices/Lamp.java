@@ -10,11 +10,6 @@ import se.raxa.server.exceptions.StatusChangeException;
 public interface Lamp extends Output, Executable {
 
     /**
-     * Called when a new object is created
-     */
-    default void onCreate() {}
-
-    /**
      * @return True if the lamp is turned on
      */
     public default boolean isTurnedOn() {
