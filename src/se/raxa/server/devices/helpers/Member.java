@@ -11,8 +11,6 @@ import se.raxa.server.exceptions.NotFoundException;
  * @author Rasmus Eneman
  */
 public class Member<T extends Device> {
-    private Class clazz;
-
     private DBObject dbObject;
     private T device = null;
 
