@@ -201,6 +201,7 @@ public class TellstickNetService extends Thread {
             if (query == null) {
                 Device device = new TellstickNet();
                 device.getDBObj().put("code", pieces[2]);
+                device.getDBObj().put("version", pieces[3]);
                 device.save();
             }
         }
