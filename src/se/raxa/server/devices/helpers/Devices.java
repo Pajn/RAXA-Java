@@ -14,6 +14,7 @@ import se.raxa.server.plugins.implementions.DevicePlugins;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rasmus Eneman
@@ -51,6 +52,39 @@ public class Devices {
     public static Device createDeviceFromDbObject(BasicDBObject obj) throws ClassCreationException {
         String type = (String) ((BasicDBList) obj.get("type")).get(0);
         return createDeviceFromDbObject(DevicePlugins.getClasses().get(type), obj);
+    }
+
+    /**
+     * Gets all Devices from the database implementing the specified type
+     *
+     * @param type The type of the Device
+     * @param name The name of the Device
+     *
+     * @throws ClassCreationException
+     */
+    public static <T extends Device> T createDeviceOfType(Class<T> type, String name, Map<String, String> kwargs) throws
+            ClassCreationException, IllegalArgumentException {
+        try {
+            T device = type.getConstructor().newInstance();
+            device.setName(name);
+            device.onCreate(kwargs);
+            return device;
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ClassCreationException("error", e); //TODO nice message
+        }
+    }
+
+    /**
+     * Gets all Devices from the database implementing the specified type
+     *
+     * @param type The type of the Device
+     * @param name The name of the Device
+     *
+     * @throws ClassCreationException
+     */
+    public static Device createDeviceOfType(String type, String name, Map<String, String> kwargs) throws
+            ClassCreationException, IllegalArgumentException {
+        return createDeviceOfType(DevicePlugins.getClasses().get(type), name, kwargs);
     }
 
     /**
