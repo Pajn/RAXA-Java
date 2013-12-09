@@ -24,6 +24,6 @@ public class NexaSCDimTest {
 
     @Test
     public void testGetType() throws Exception {
-        assertEquals(true, Arrays.equals(new String[]{"NexaSCDim", "DimmableByTime", "Lamp", "Output"}, nexaSCDim.getType()));
+        assertEquals(true, Arrays.equals(new String[]{"NexaSCDim", "DimmableByTime", "Lamp", "Executable", "Output"}, nexaSCDim.getType()));
     }
 }
