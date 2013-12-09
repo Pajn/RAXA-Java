@@ -144,6 +144,31 @@ public class Devices {
      *
      * @throws ClassCreationException
      */
+    public static List<Device> getDevicesByType(String type) throws ClassCreationException {
+        List<Device> devices = new ArrayList<>();
+
+        DBObject query = new BasicDBObject();
+
+        if (type != null && type.length() != 0) {
+            query.put("type", type);
+        }
+
+        try (DBCursor cursor = Database.devices().find(query)) {
+            for (DBObject dbObj : cursor) {
+                devices.add(createDeviceFromDbObject((BasicDBObject) dbObj));
+            }
+        }
+
+        return devices;
+    }
+
+    /**
+     * Gets all Devices from the database implementing the specified type
+     *
+     * @param type The type of the Devices
+     *
+     * @throws ClassCreationException
+     */
     public static <T extends Device> List<T> getDevicesByType(Class<T> type) throws ClassCreationException {
         List<T> devices = new ArrayList<>();
 
