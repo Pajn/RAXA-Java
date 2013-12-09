@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 import se.raxa.server.exceptions.ClassCreationException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,6 +21,21 @@ public interface Device {
      * @throws IllegalArgumentException If at least one of the kwargs are invalid (missing or illegal value)
      */
     public default void onCreate(Map<String, String> kwargs) throws ClassCreationException, IllegalArgumentException {}
+
+    /**
+     * Called when the device should be presented
+     *
+     * @return A map with details that should be outputted
+     */
+    public default Map<String, Object> describe() {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id", getId().toStringMongod());
+        map.put("name", getName());
+        map.put("type", getType());
+
+        return map;
+    }
 
     /**
      * @return The inner DBObject

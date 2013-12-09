@@ -46,6 +46,20 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
     }
 
     /**
+     * Called when the device should be presented
+     *
+     * @return A map with details that should be outputted
+     */
+    @Override
+    public Map<String, Object> describe() {
+        Map<String, Object> map = super.describe();
+
+        map.put("senderID", getSenderID());
+
+        return map;
+    }
+
+    /**
      * @return An array of types, ordered by position in tree
      */
     @Override

@@ -31,6 +31,20 @@ public interface Output extends Device {
     }
 
     /**
+     * Called when the device should be presented
+     *
+     * @return A map with details that should be outputted
+     */
+    @Override
+    public default Map<String, Object> describe() {
+        Map<String, Object> map = Device.super.describe();
+
+        map.put("connector", getDBObj().get("connector"));
+
+        return map;
+    }
+
+    /**
      * @param clazz The class of the Connector
      *
      * @return The Outputs Connector or null if not available

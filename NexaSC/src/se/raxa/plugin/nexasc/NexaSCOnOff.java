@@ -44,6 +44,21 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
     }
 
     /**
+     * Called when the device should be presented
+     *
+     * @return A map with details that should be outputted
+     */
+    @Override
+    public Map<String, Object> describe() {
+        Map<String, Object> map = super.describe();
+
+        map.put("house", getHouse());
+        map.put("device", getDevice());
+
+        return map;
+    }
+
+    /**
      * @return An array of types, ordered by position in tree
      */
     @Override
