@@ -1,11 +1,16 @@
 package se.raxa.server.devices;
 
 import com.mongodb.BasicDBObject;
+import org.bson.types.ObjectId;
 import se.raxa.server.exceptions.ClassCreationException;
+import se.raxa.server.exceptions.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static se.raxa.server.devices.helpers.Devices.createDeviceFromDbObject;
+import static se.raxa.server.devices.helpers.Devices.getDeviceById;
 
 /**
  * @author Rasmus Eneman
@@ -26,7 +31,29 @@ public interface Output extends Device {
         Device.super.onCreate(kwargs);
 
         if (kwargs.containsKey("connector")) {
-            getDBObj().put("connector", kwargs.get("connector"));
+            boolean isSupported = false;
+            try {
+                Device connector = getDeviceById(new ObjectId(kwargs.get("connector")));
+
+                for (Class clazz : getSupportedConnectors()) {
+                    if (clazz.isInstance(connector)) {
+                        isSupported = true;
+                    }
+                }
+            } catch (NotFoundException | IllegalArgumentException e) {
+                throw new IllegalArgumentException("Connector not found");
+            }
+
+            if (isSupported) {
+                getDBObj().put("connector", kwargs.get("connector"));
+            } else {
+                throw new IllegalArgumentException("Connector is not supported");
+            }
+
+        } else {
+            if (!getSupportedConnectors().contains(null)) {
+                throw new IllegalArgumentException("A connector is required by this plugin");
+            }
         }
     }
 
@@ -42,6 +69,17 @@ public interface Output extends Device {
         map.put("connector", getDBObj().get("connector"));
 
         return map;
+    }
+
+    /**
+     * @return A list of supported Connector classes, contains null if supports not having one
+     */
+    public default List<Class> getSupportedConnectors() {
+        List <Class> classes = new ArrayList<>();
+
+        classes.add(null);
+
+        return classes;
     }
 
     /**

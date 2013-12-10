@@ -9,6 +9,8 @@ import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -65,6 +67,18 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
     @Override
     public String[] getType() {
         return new String[] {"NexaSLOnOff", "NexaSL", "Lamp", "Executable", "Output"};
+    }
+
+    /**
+     * @return A list of supported Connector classes, contains null if supports not having one
+     */
+    @Override
+    public List<Class> getSupportedConnectors() {
+        List <Class> classes = new ArrayList<>();
+
+        classes.add(TellstickNet.class);
+
+        return classes;
     }
 
     /**

@@ -142,7 +142,11 @@ public class Devices {
      * @throws ClassCreationException If the class couldn't be created
      */
     public static Device getDeviceById(ObjectId id) throws NotFoundException, ClassCreationException {
-        return getDeviceById(Device.class, id);
+        BasicDBObject dbObject = queryDatabase("_id", id);
+
+        Class<? extends Device> clazz = DevicePlugins.getClasses().get(((BasicDBList) dbObject.get("type")).get(0));
+
+        return createDeviceFromDbObject(clazz, dbObject);
     }
 
     /**
