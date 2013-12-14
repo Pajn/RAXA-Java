@@ -21,7 +21,8 @@ public class NexaSCOnOffTest {
     @BeforeClass
     public static void oneTimeSetUp() throws ClassCreationException {
         nexaSCOnOff = Devices.createDeviceFromDbObject(NexaSCOnOff.class, new BasicDBObject());
-        nexaSCOnOff.setHouseDevice((byte) 13, (byte) 2);
+        nexaSCOnOff.setHouse((byte) 13);
+        nexaSCOnOff.setDevice((byte) 2);
     }
 
     @Test

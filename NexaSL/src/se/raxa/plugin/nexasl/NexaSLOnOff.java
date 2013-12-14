@@ -30,7 +30,7 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
      */
     @Override
     public void onCreate(Map<String, String> kwargs) throws ClassCreationException {
-        Lamp.super.onCreate(kwargs);
+        super.onCreate(kwargs);
 
         Random r = new Random();
         int rand;

@@ -31,29 +31,26 @@ public interface Output extends Device {
         Device.super.onCreate(kwargs);
 
         if (kwargs.containsKey("connector")) {
-            boolean isSupported = false;
-            try {
-                Device connector = getDeviceById(new ObjectId(kwargs.get("connector")));
-
-                for (Class clazz : getSupportedConnectors()) {
-                    if (clazz.isInstance(connector)) {
-                        isSupported = true;
-                    }
-                }
-            } catch (NotFoundException | IllegalArgumentException e) {
-                throw new IllegalArgumentException("Connector not found");
-            }
-
-            if (isSupported) {
-                getDBObj().put("connector", kwargs.get("connector"));
-            } else {
-                throw new IllegalArgumentException("Connector is not supported");
-            }
-
+            setConnector(new ObjectId(kwargs.get("connector")));
         } else {
             if (!getSupportedConnectors().contains(null)) {
                 throw new IllegalArgumentException("A connector is required by this plugin");
             }
+        }
+    }
+
+    /**
+     * Called when the device is updated
+     *
+     * @param kwargs A map with arguments to update
+     *
+     * @throws IllegalArgumentException If at least one of the kwargs are invalid
+     */
+    public default void onUpdate(Map<String, String> kwargs) throws IllegalArgumentException {
+        Device.super.onUpdate(kwargs);
+
+        if (kwargs.containsKey("connector")) {
+            setConnector(new ObjectId(kwargs.get("connector")));
         }
     }
 
@@ -104,5 +101,28 @@ public interface Output extends Device {
      */
     public default Connector getConnector() throws ClassCreationException {
         return getConnector(Connector.class);
+    }
+
+    public default void setConnector(ObjectId id) {
+        boolean isSupported = false;
+        Device connector;
+
+        try {
+            connector = getDeviceById(id);
+
+            for (Class clazz : getSupportedConnectors()) {
+                if (clazz.isInstance(connector)) {
+                    isSupported = true;
+                }
+            }
+        } catch (ClassCreationException | NotFoundException | IllegalArgumentException e) {
+            throw new IllegalArgumentException("Connector not found");
+        }
+
+        if (isSupported) {
+            getDBObj().put("connector", connector.describe());
+        } else {
+            throw new IllegalArgumentException("Connector is not supported");
+        }
     }
 }

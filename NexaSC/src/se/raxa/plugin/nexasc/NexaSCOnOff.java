@@ -26,23 +26,38 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
      */
     @Override
     public void onCreate(Map<String, String> kwargs) throws ClassCreationException, IllegalArgumentException {
-        Lamp.super.onCreate(kwargs);
+        super.onCreate(kwargs);
 
-        byte house;
         try {
-            house = Byte.parseByte(kwargs.get("house"));
+            setHouse(Byte.parseByte(kwargs.get("house")));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("house must be a integer between 0 and 15");
         }
 
-        byte device;
         try {
-            device = Byte.parseByte(kwargs.get("device"));
+            setDevice(Byte.parseByte(kwargs.get("device")));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("device must be a integer between 0 and 15");
         }
+    }
 
-        setHouseDevice(house, device);
+    /**
+     * Called when the device is updated
+     *
+     * @param kwargs A map with arguments to update
+     *
+     * @throws IllegalArgumentException If at least one of the kwargs are invalid
+     */
+    public void onUpdate(Map<String, String> kwargs) throws IllegalArgumentException {
+        super.onUpdate(kwargs);
+
+        if (kwargs.containsKey("house")) {
+            setHouse(Byte.parseByte(kwargs.get("house")));
+        }
+
+        if (kwargs.containsKey("device")) {
+            setDevice(Byte.parseByte(kwargs.get("device")));
+        }
     }
 
     /**
@@ -89,6 +104,18 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
     }
 
     /**
+     * Set the house code of the device
+     * @param house The house code
+     */
+    public void setHouse(byte house) throws IllegalArgumentException {
+        if (house < 0 || house > 15) {
+            throw new IllegalArgumentException("house must be a integer between 0 and 15");
+        }
+
+        getDBObj().put("house", house);
+    }
+
+    /**
      * @return The device code of the device
      */
     @Override
@@ -97,19 +124,14 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
     }
 
     /**
-     * Set the house and device code of the device
-     * @param house The house code
+     * Set the device code of the device
      * @param device The device code
      */
-    public void setHouseDevice(byte house, byte device) throws IllegalArgumentException {
-        if (house < 0 || house > 15) {
-            throw new IllegalArgumentException("house must be a integer between 0 and 15");
-        }
+    public void setDevice(byte device) throws IllegalArgumentException {
         if (device < 0 || device > 15) {
             throw new IllegalArgumentException("device must be a integer between 0 and 15");
         }
 
-        getDBObj().put("house", house);
         getDBObj().put("device", device);
     }
 

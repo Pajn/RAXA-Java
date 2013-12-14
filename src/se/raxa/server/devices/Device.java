@@ -23,6 +23,19 @@ public interface Device {
     public default void onCreate(Map<String, String> kwargs) throws ClassCreationException, IllegalArgumentException {}
 
     /**
+     * Called when the device is updated
+     *
+     * @param kwargs A map with arguments to update
+     *
+     * @throws IllegalArgumentException If at least one of the kwargs are invalid
+     */
+    public default void onUpdate(Map<String, String> kwargs) throws IllegalArgumentException {
+        if (kwargs.containsKey("name")) {
+            setName(kwargs.get("name"));
+        }
+    }
+
+    /**
      * Called when the device should be presented
      *
      * @return A map with details that should be outputted
