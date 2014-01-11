@@ -49,7 +49,7 @@ public class Scenario extends AbstractDevice implements Group<Executable>, Execu
     }
 
     public void addMember(Executable device, Object action) {
-        Member member = new Member<>(device);
+        Member<Executable> member = new Member<>(device);
         member.put("action", action);
         addMember(member);
 
