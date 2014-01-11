@@ -27,7 +27,7 @@ public class NexaSCOnOffTest {
 
     @Test
     public void testGetType() throws Exception {
-        assertEquals(true, Arrays.equals(new String[]{"NexaSCOnOff", "Lamp", "Output"}, nexaSCOnOff.getType()));
+        assertEquals(true, Arrays.equals(new String[]{"NexaSCOnOff", "Lamp", "Executable", "Output"}, nexaSCOnOff.getType()));
     }
 
     @Test

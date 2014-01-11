@@ -25,7 +25,7 @@ public class NexaSLDimTest {
     @Test
     public void testGetType() throws Exception {
         assertEquals(true,
-                Arrays.equals(new String[]{"NexaSLDim", "NexaSL", "DimmableByLevel", "DimmableByTime", "Lamp", "Output"},
+                Arrays.equals(new String[]{"NexaSLDim", "NexaSL", "DimmableByLevel", "DimmableByTime", "Lamp", "Executable", "Output"},
                               nexaSLDim.getType()));
     }
 

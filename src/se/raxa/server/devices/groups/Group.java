@@ -10,11 +10,14 @@ import se.raxa.server.exceptions.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Rasmus Eneman
  */
 public interface Group<T extends Device> extends Device {
+    static final Logger LOGGER = Logger.getLogger(Group.class.getName());
 
     /**
      * @return A collection of all members in the group
@@ -28,9 +31,15 @@ public interface Group<T extends Device> extends Device {
             } catch (NotFoundException e) {
                 DBObject query = new BasicDBObject("_id", ((DBObject) object).get("id"));
                 Database.devices().update(query, new BasicDBObject("$pull", new BasicDBObject("members", object)));
-                //TODO log?
+                LOGGER.log(Level.WARNING, "{0}: Member with id \"{1}\" not found, removing", new Object[]{
+                        this.getName(),
+                        ((DBObject) object).get("id").toString()
+                });
             } catch (ClassCreationException e) {
-                //TODO log?, remove?
+                LOGGER.log(Level.WARNING, String.format("%s: Member with id \"%s\" could not be created, error \"%s\"",
+                        this.getName(),
+                        ((DBObject) object).get("id").toString(),
+                        e.getMessage()), e);
             }
         }
         return members;
@@ -42,6 +51,6 @@ public interface Group<T extends Device> extends Device {
     }
 
     public default void addMember(T device) {
-        addMember(new Member<T>(device));
+        addMember(new Member<>(device));
     }
 }

@@ -3,11 +3,15 @@ package se.raxa.server.plugins;
 import java.io.File;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Rasmus Eneman
  */
 public class PluginLoader {
+    private static final Logger LOGGER = Logger.getLogger(PluginLoader.class.getName());
+
     private static PluginLoader pluginLoader;
     private final ServiceLoader<Plugin> serviceLoader;
 
@@ -22,7 +26,7 @@ public class PluginLoader {
      */
     private static ClassLoader addPluginJarsToClasspath() {
         File file = new File("plugins");
-        System.out.println(file.getAbsolutePath());
+        LOGGER.log(Level.INFO, "Reading JAR: \"{0}\"", file.getAbsolutePath());
         return ClasspathUtils.addDirToClasspath(file);
     }
 
@@ -30,7 +34,7 @@ public class PluginLoader {
      * @return A singleton instance of PluginLoader
      */
     private static PluginLoader getInstance() {
-        if(pluginLoader == null) {
+        if (pluginLoader == null) {
             pluginLoader = new PluginLoader();
         }
         return pluginLoader;
@@ -51,11 +55,11 @@ public class PluginLoader {
     public static void initPlugins() {
         Iterator<Plugin> iterator = getPlugins();
         if(!iterator.hasNext()) {
-            System.out.println("No plugins were found!");
+            LOGGER.log(Level.INFO, "No plugins were found!");
         }
         while(iterator.hasNext()) {
             Plugin plugin = iterator.next();
-            System.out.println("Initializing the plugin " + plugin.getName());
+            LOGGER.log(Level.INFO, "Initializing plugin \"{0}\"", plugin.getName());
             plugin.init();
         }
     }

@@ -193,16 +193,24 @@ public class TellstickNetService extends Thread {
          */
         public static void put(String identificationHeader, InetAddress address) {
             String[] pieces = SEPARATOR.split(identificationHeader);
-            tellsticks.put(pieces[2], new Tellstick(address));
+            String code = pieces[2];
+            String version = pieces[3].trim();
+            tellsticks.put(code, new Tellstick(address));
 
             BasicDBObject query = new BasicDBObject("type", "TellstickNet");
-            query.put("code", pieces[2]);
+            query.put("code", code);
             query = (BasicDBObject) Database.devices().findOne(query);
             if (query == null) {
                 Device device = new TellstickNet();
-                device.getDBObj().put("code", pieces[2]);
-                device.getDBObj().put("version", pieces[3]);
+                device.getDBObj().put("code", code);
+                device.getDBObj().put("version", version);
                 device.save();
+            } else {
+                if (query.get("version") != version) {
+                    BasicDBObject updated = (BasicDBObject) query.copy();
+                    updated.put("version", version);
+                    Database.devices().update(query, updated);
+                }
             }
         }
 
