@@ -10,12 +10,15 @@ import se.raxa.server.exceptions.ExecutionException;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Rasmus Eneman
  */
 public class Scenario extends AbstractDevice implements Group<Executable>, Executable {
     private static final Executor EXECUTOR = Executors.newSingleThreadExecutor();
+    private static final Logger LOGGER = Logger.getLogger(Scenario.class.getName());
 
     /**
      * @return An array of types, ordered by position in tree
@@ -36,7 +39,10 @@ public class Scenario extends AbstractDevice implements Group<Executable>, Execu
                 try {
                     ((Executable) member.getDevice()).execute(member.get("action"));
                 } catch (ExecutionException e) {
-                    //TODO log
+                    LOGGER.log(Level.WARNING, String.format("%s: Error executing device \"%s\" error \"%s\"",
+                                                            this.getName(),
+                                                            member.getDevice().getName(),
+                                                            e.getMessage()), e);
                 }
             }
         });
