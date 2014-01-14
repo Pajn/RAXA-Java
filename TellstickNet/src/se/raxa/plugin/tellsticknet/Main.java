@@ -4,7 +4,7 @@ import se.raxa.server.plugins.Plugin;
 
 import java.net.SocketException;
 
-import static se.raxa.server.plugins.implementions.ConnectorPlugins.registerPlugin;
+import static se.raxa.server.plugins.devices.DeviceClasses.registerDevice;
 
 /**
  * @author Rasmus Eneman
@@ -17,7 +17,7 @@ public class Main implements Plugin {
 
     @Override
     public void init() {
-        registerPlugin("TellstickNet", TellstickNet.class);
+        registerDevice(TellstickNet.class);
 
         try {
             TellstickNetService.initialize();

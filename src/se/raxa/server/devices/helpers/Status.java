@@ -12,7 +12,7 @@ public enum Status {
     Dim(2),
     DimLevel(3);
 
-    private static Map<Integer, Status> statuses = new HashMap<Integer,Status>();
+    private static Map<Integer, Status> statuses = new HashMap<>();
     private int value;
 
     static {

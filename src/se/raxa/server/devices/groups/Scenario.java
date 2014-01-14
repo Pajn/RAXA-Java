@@ -37,10 +37,10 @@ public class Scenario extends AbstractDevice implements Group<Executable>, Execu
         EXECUTOR.execute(() -> {
             for (Member member : getMembers()) {
                 try {
-                    ((Executable) member.getDevice()).execute(member.get("action"));
+                    ((Executable) member.getDevice()).execute((String) member.get("action"));
                 } catch (ExecutionException e) {
                     LOGGER.log(Level.WARNING, String.format("%s: Error executing device \"%s\" error \"%s\"",
-                                                            this.getName(),
+                                                            getName(),
                                                             member.getDevice().getName(),
                                                             e.getMessage()), e);
                 }
