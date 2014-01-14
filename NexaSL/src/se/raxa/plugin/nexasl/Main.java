@@ -2,7 +2,7 @@ package se.raxa.plugin.nexasl;
 
 import se.raxa.server.plugins.Plugin;
 
-import static se.raxa.server.plugins.implementions.LampPlugins.registerPlugin;
+import static se.raxa.server.plugins.devices.DeviceClasses.registerDevice;
 
 /**
  * @author Rasmus Eneman
@@ -15,7 +15,7 @@ public class Main implements Plugin {
 
     @Override
     public void init() {
-        registerPlugin("NexaSLDim", NexaSLDim.class);
-        registerPlugin("NexaSLOnOff", NexaSLOnOff.class);
+        registerDevice(NexaSLDim.class);
+        registerDevice(NexaSLOnOff.class);
     }
 }

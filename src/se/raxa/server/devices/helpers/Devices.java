@@ -9,7 +9,7 @@ import se.raxa.server.Database;
 import se.raxa.server.devices.Device;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
-import se.raxa.server.plugins.implementions.DevicePlugins;
+import se.raxa.server.plugins.devices.DeviceClasses;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class Devices {
      */
     public static Device createDeviceFromDbObject(BasicDBObject obj) throws ClassCreationException {
         String type = (String) ((BasicDBList) obj.get("type")).get(0);
-        return createDeviceFromDbObject(DevicePlugins.getClasses().get(type), obj);
+        return createDeviceFromDbObject(DeviceClasses.getClass(type), obj);
     }
 
     /**
