@@ -50,8 +50,10 @@ public class Action {
             try {
                 method.invoke(object);
                 return true;
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new ExecutionException(e);
+            } catch (IllegalAccessException e) {
+                throw new ExecutionException("IllegalAccessException when accessing action callback on plugin", e); //todo investigate what this means
+            } catch (InvocationTargetException e){
+                throw new ExecutionException(e.getCause().getMessage(), e);
             }
         } else {
             try {
@@ -79,8 +81,10 @@ public class Action {
                 try {
                     method.invoke(object, value);
                     return true;
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new ExecutionException(e);
+                } catch (IllegalAccessException e) {
+                    throw new ExecutionException("IllegalAccessException when accessing action callback on plugin", e); //todo investigate what this means
+                } catch (InvocationTargetException e){
+                    throw new ExecutionException(e.getCause().getMessage(), e);
                 }
             }
             return false;
@@ -121,8 +125,10 @@ public class Action {
                 try {
                     method.invoke(object, i);
                     return true;
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new ExecutionException(e);
+                } catch (IllegalAccessException e) {
+                    throw new ExecutionException("IllegalAccessException when accessing action callback on plugin", e); //todo investigate what this means
+                } catch (InvocationTargetException e){
+                    throw new ExecutionException(e.getCause().getMessage(), e);
                 }
             }
             return false;
