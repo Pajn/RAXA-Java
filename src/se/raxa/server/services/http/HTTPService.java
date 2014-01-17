@@ -28,6 +28,10 @@ public class HTTPService extends Thread {
                 .method(HttpMethod.GET, HttpMethod.POST);
 
         server.uri("/devices/{deviceID}", deviceController)
-                .method(HttpMethod.PUT, HttpMethod.DELETE).action("readSingle", HttpMethod.GET);
+                .method(HttpMethod.PUT, HttpMethod.DELETE)
+                .action("readSingle", HttpMethod.GET);
+
+        server.uri("/devices/{deviceID}/execute", deviceController)
+                .action("execute", HttpMethod.POST);
     }
 }

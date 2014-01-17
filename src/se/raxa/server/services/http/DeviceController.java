@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import se.raxa.server.Database;
 import se.raxa.server.devices.Device;
+import se.raxa.server.devices.Executable;
 import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
@@ -97,5 +98,22 @@ public class DeviceController {
             e.printStackTrace();
         }
         response.setResponseNoContent();
+    }
+
+    public void execute(Request request, Response response) {
+        String id = request.getHeader("deviceID", "no id provided");
+        String action = request.getHeader("action", "no action provided");
+        try {
+            Device device = Devices.getDeviceById(new ObjectId(id));
+            if (device instanceof Executable) {
+                ((Executable) device).execute(action);
+            } else {
+                throw new IllegalArgumentException("This device isn't executable");
+            }
+        } catch (NotFoundException e) {
+            response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
+        } catch (Exception e) { //TODO Fix error handling
+            e.printStackTrace();
+        }
     }
 }

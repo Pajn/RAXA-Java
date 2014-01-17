@@ -84,7 +84,7 @@ public class Devices {
      */
     public static Device createDeviceOfType(String type, String name, Map<String, String> kwargs) throws
             ClassCreationException, IllegalArgumentException {
-        return createDeviceOfType(DevicePlugins.getClasses().get(type), name, kwargs);
+        return createDeviceOfType(DeviceClasses.getClass(type), name, kwargs);
     }
 
     /**
@@ -144,7 +144,7 @@ public class Devices {
     public static Device getDeviceById(ObjectId id) throws NotFoundException, ClassCreationException {
         BasicDBObject dbObject = queryDatabase("_id", id);
 
-        Class<? extends Device> clazz = DevicePlugins.getClasses().get(((BasicDBList) dbObject.get("type")).get(0));
+        Class<? extends Device> clazz = DeviceClasses.getClass((String) ((BasicDBList) dbObject.get("type")).get(0));
 
         return createDeviceFromDbObject(clazz, dbObject);
     }
