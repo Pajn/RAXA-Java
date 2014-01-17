@@ -2,8 +2,8 @@ package se.raxa.server.services.http;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.strategicgains.restexpress.Request;
-import com.strategicgains.restexpress.Response;
+import org.restexpress.Request;
+import org.restexpress.Response;
 import org.bson.types.ObjectId;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import se.raxa.server.Database;
