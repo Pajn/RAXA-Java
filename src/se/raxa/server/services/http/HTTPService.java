@@ -3,8 +3,6 @@ package se.raxa.server.services.http;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.restexpress.Format;
 import org.restexpress.RestExpress;
-import org.restexpress.serialization.DefaultSerializationProvider;
-import org.restexpress.serialization.SerializationProvider;
 
 /**
  * @author Rasmus Eneman
@@ -13,8 +11,8 @@ public class HTTPService extends Thread {
 
     @Override
     public void run() {
-        SerializationProvider serializationProvider = new DefaultSerializationProvider();
-        serializationProvider.setDefaultFormat(Format.JSON);
+        SerializationProvider serializationProvider = new SerializationProvider();
+        serializationProvider.setDefaultFormat(Format.WRAPPED_JSON);
         RestExpress.setSerializationProvider(serializationProvider);
         RestExpress server = new RestExpress()
                 .setName("RAXA");
