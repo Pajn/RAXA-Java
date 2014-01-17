@@ -2,6 +2,7 @@ package se.raxa.server.devices;
 
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.StatusChangeException;
+import se.raxa.server.plugins.devices.AddAction;
 
 /**
  * @author Rasmus Eneman
@@ -40,10 +41,20 @@ public interface Lamp extends Output, Executable {
      */
     public abstract void turnOn() throws StatusChangeException;
 
+    @AddAction(name="lamp:on")
+    public default void turnOnCaller() throws StatusChangeException {
+        turnOn();
+    }
+
     /**
      * Called when the lamp should turn off
      *
      * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     public abstract void turnOff() throws StatusChangeException;
+
+    @AddAction(name="lamp:off")
+    public default void turnOffCaller() throws StatusChangeException {
+        turnOff();
+    }
 }

@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface AddAction {
     String name();
-    String[] arguments() default "";
+    String[] arguments() default {};
 }
