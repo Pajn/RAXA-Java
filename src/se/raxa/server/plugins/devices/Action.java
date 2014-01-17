@@ -116,7 +116,8 @@ public class Action {
             }
             Integer i = Integer.parseInt(value);
 
-            if ((maxValue != null && minValue <= i &&i <= maxValue) || minValue == null || i >= minValue) {
+            if ((maxValue != null && minValue <= i && i <= maxValue) ||
+                (maxValue == null && (minValue == null || i >= minValue))) {
                 try {
                     method.invoke(object, i);
                     return true;
