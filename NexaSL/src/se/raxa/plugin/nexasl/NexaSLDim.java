@@ -6,6 +6,7 @@ import se.raxa.server.devices.DimmableByTime;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
+import se.raxa.server.plugins.devices.AddAction;
 
 /**
  * @author Rasmus Eneman
@@ -49,6 +50,12 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
         } catch (ClassCreationException e) {
             throw new StatusChangeException("error when getting connector", e);
         }
+    }
+
+    @Override
+    @AddAction(name="dim_level", arguments = {"0", "15"})
+    public void setDimLevelCaller(int level) throws StatusChangeException {
+        setDimLevel(level);
     }
 
     /**

@@ -1,5 +1,6 @@
 package se.raxa.server.devices;
 
+import se.raxa.server.plugins.devices.AddAction;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.StatusChangeException;
 
@@ -42,10 +43,20 @@ public interface DimmableByTime extends Lamp {
      */
     public abstract void startDimming() throws StatusChangeException;
 
+    @AddAction(name="dim:start")
+    public default void startDimmingCaller() throws StatusChangeException {
+        startDimming();
+    }
+
     /**
      * Called when dimming should be stopped
      *
      * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)
      */
     public abstract void stopDimming() throws StatusChangeException;
+
+    @AddAction(name="dim:stop")
+    public default void stopDimmingCaller() throws StatusChangeException {
+        stopDimming();
+    }
 }
