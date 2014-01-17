@@ -11,6 +11,7 @@ import se.raxa.server.devices.Device;
 import se.raxa.server.devices.Executable;
 import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
+import se.raxa.server.exceptions.ExecutionException;
 import se.raxa.server.exceptions.NotFoundException;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class DeviceController {
                 list.add(device.describe());
             }
         } catch (Exception e) { //TODO Fix error handling
+            response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            response.setException(e);
             e.printStackTrace();
         }
         return list;
@@ -45,12 +48,14 @@ public class DeviceController {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
             return null;
         } catch (Exception e) { //TODO Fix error handling
+            response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            response.setException(e);
             e.printStackTrace();
             return null;
         }
     }
 
-    public Object create(Request request, Response response) throws ClassCreationException {
+    public Object create(Request request, Response response) {
         String type = request.getHeader("type");
         String name = request.getHeader("name");
         Map<String, String> kwargs = new HashMap<>();
@@ -65,7 +70,13 @@ public class DeviceController {
 
             response.setResponseCreated();
             return device.describe();
-        } catch (IllegalArgumentException | ClassCreationException e) { //TODO Fix error handling
+        } catch (IllegalArgumentException e) {
+            response.setResponseStatus(HttpResponseStatus.BAD_REQUEST);
+            return e.getMessage();
+        } catch (ClassCreationException e) { //TODO Fix error handling
+            response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            response.setException(e);
+            e.printStackTrace();
             return e.getMessage();
         }
     }
@@ -83,7 +94,12 @@ public class DeviceController {
             device.onUpdate(kwargs);
             device.save();
             return device.describe();
-        } catch (Exception e) { //TODO Fix error handling
+        } catch (NotFoundException e) {
+            response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
+            return null;
+        } catch (ClassCreationException e) { //TODO Fix error handling
+            response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            response.setException(e);
             e.printStackTrace();
             return null;
         }
@@ -91,12 +107,10 @@ public class DeviceController {
 
     public void delete(Request request, Response response) {
         String id = request.getHeader("deviceID", "no id provided");
-        try {
-            DBObject query = new BasicDBObject("_id", new ObjectId(id));
-            Database.devices().remove(query);
-        } catch (Exception e) { //TODO Fix error handling
-            e.printStackTrace();
-        }
+
+        DBObject query = new BasicDBObject("_id", new ObjectId(id));
+        Database.devices().remove(query);
+
         response.setResponseNoContent();
     }
 
@@ -112,7 +126,9 @@ public class DeviceController {
             }
         } catch (NotFoundException e) {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
-        } catch (Exception e) { //TODO Fix error handling
+        } catch (ExecutionException | ClassCreationException e) { //TODO Fix error handling
+            response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            response.setException(e);
             e.printStackTrace();
         }
     }
