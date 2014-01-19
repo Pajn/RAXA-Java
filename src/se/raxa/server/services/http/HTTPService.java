@@ -1,7 +1,6 @@
 package se.raxa.server.services.http;
 
 import org.jboss.netty.handler.codec.http.HttpMethod;
-import org.restexpress.Format;
 import org.restexpress.RestExpress;
 
 /**
@@ -11,9 +10,7 @@ public class HTTPService extends Thread {
 
     @Override
     public void run() {
-        SerializationProvider serializationProvider = new SerializationProvider();
-        serializationProvider.setDefaultFormat(Format.WRAPPED_JSON);
-        RestExpress.setSerializationProvider(serializationProvider);
+        RestExpress.setSerializationProvider(new SerializationProvider());
         RestExpress server = new RestExpress()
                 .setName("RAXA");
 

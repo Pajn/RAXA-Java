@@ -15,5 +15,6 @@ class SerializationProvider extends AbstractSerializationProvider {
     public SerializationProvider() {
         super();
         add(new JacksonJsonProcessor(Format.WRAPPED_JSON), JSEND_WRAPPER);
+        setDefaultFormat(Format.WRAPPED_JSON);
     }
 }
