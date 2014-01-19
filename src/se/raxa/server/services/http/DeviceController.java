@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Rasmus Eneman
  */
 @SuppressWarnings("UnusedDeclaration") // As reflection is used this is worthless
-public class DeviceController {
+class DeviceController {
 
     public List<Map<String, Object>> read(Request request, Response response) {
         List<Map<String, Object>> list = new ArrayList<>();

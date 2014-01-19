@@ -9,7 +9,7 @@ import org.restexpress.serialization.json.JacksonJsonProcessor;
 /**
  * @author Rasmus Eneman
  */
-public class SerializationProvider extends AbstractSerializationProvider {
+class SerializationProvider extends AbstractSerializationProvider {
     private static final ResponseWrapper JSEND_WRAPPER = new JsendResponseWrapper();
 
     public SerializationProvider() {

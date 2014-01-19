@@ -16,9 +16,9 @@ public class Action {
     private static final Pattern COLON = Pattern.compile(":");
     private static final Pattern INTEGER = Pattern.compile("-?\\d+");
 
-    String name;
-    ActionType type;
-    Method method;
+    private String name;
+    private ActionType type;
+    private Method method;
 
     public Action(AddAction annotation, Method method) throws BadPluginException {
         name = annotation.name();
