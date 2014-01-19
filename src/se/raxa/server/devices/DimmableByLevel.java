@@ -10,18 +10,6 @@ import se.raxa.server.plugins.devices.GetProperty;
 public interface DimmableByLevel extends Lamp {
 
     /**
-     * @return The highest supported dim level
-     */
-    public abstract int getDimLevelMax();
-
-    /**
-     * @return The lowest supported dim level, defaults to 0
-     */
-    public default int getDimLevelMin() {
-        return 0;
-    }
-
-    /**
      * @return The current dim level
      */
     public abstract int getDimLevel();

@@ -30,11 +30,6 @@ public class NexaSLDimTest {
     }
 
     @Test
-    public void testGetDimLevelMax() throws Exception {
-        assertEquals(15, nexaSLDim.getDimLevelMax());
-    }
-
-    @Test
     public void testGetDimLevel() throws Exception {
         nexaSLDim.getDBObj().put("dim_level", 12);
         assertEquals(12, nexaSLDim.getDimLevel());

@@ -22,14 +22,6 @@ public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableB
     }
 
     /**
-     * @return The highest supported dim level
-     */
-    @Override
-    public int getDimLevelMax() {
-        return 15;
-    }
-
-    /**
      * @return The lowest current dim level
      */
     @Override
