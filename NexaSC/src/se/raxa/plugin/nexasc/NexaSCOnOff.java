@@ -50,12 +50,8 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
      * Set the house code of the device
      * @param house The house code
      */
-    @SetProperty("house_code")
+    @SetProperty(value = "house_code", arguments = {"0", "15"})
     public void setHouse(int house) throws IllegalArgumentException {
-        if (house < 0 || house > 15) {
-            throw new IllegalArgumentException("house must be a integer between 0 and 15");
-        }
-
         getDBObj().put("house", house);
     }
 
@@ -72,12 +68,8 @@ public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
      * Set the device code of the device
      * @param device The device code
      */
-    @SetProperty("device_code")
+    @SetProperty(value = "device_code", arguments = {"0", "15"})
     public void setDevice(int device) throws IllegalArgumentException {
-        if (device < 0 || device > 15) {
-            throw new IllegalArgumentException("device must be a integer between 0 and 15");
-        }
-
         getDBObj().put("device", device);
     }
 

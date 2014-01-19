@@ -118,18 +118,25 @@ public class Setter {
             }
             Integer i = Integer.parseInt(value);
 
-            if ((maxValue != null && minValue <= i && i <= maxValue) ||
-                    (maxValue == null && (minValue == null || i >= minValue))) {
-                try {
-                    method.invoke(object, i);
-                } catch (IllegalAccessException e) {
-                    throw new BadPluginException("Can't access setter", e);
-                } catch (InvocationTargetException e) {
-                    if (e.getCause() instanceof IllegalArgumentException) {
-                        throw (IllegalArgumentException) e.getCause();
-                    } else {
-                        throw new BadPluginException("Other exception that IllegalArgumentException when calling setter", e);
-                    }
+            if (maxValue != null && i > maxValue) {
+                throw new IllegalArgumentException(String.format("Property \"%s\" require an integer not higher than %d",
+                                                                 name, maxValue));
+            }
+
+            if (minValue != null && i < minValue) {
+                throw new IllegalArgumentException(String.format("Property \"%s\" require an integer not lower than %d",
+                                                                 name, minValue));
+            }
+
+            try {
+                method.invoke(object, i);
+            } catch (IllegalAccessException e) {
+                throw new BadPluginException("Can't access setter", e);
+            } catch (InvocationTargetException e) {
+                if (e.getCause() instanceof IllegalArgumentException) {
+                    throw (IllegalArgumentException) e.getCause();
+                } else {
+                    throw new BadPluginException("Other exception that IllegalArgumentException when calling setter", e);
                 }
             }
         }
