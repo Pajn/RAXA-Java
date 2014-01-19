@@ -81,7 +81,7 @@ public class Setter {
                     if (e.getCause() instanceof IllegalArgumentException) {
                         throw (IllegalArgumentException) e.getCause();
                     } else {
-                        throw new BadPluginException("Other exception that IllegalArgumentException when calling setter", e);
+                        throw new BadPluginException("Other exception than IllegalArgumentException when calling setter", e);
                     }
                 }
             }
