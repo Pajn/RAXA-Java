@@ -2,10 +2,10 @@ package se.raxa.server.services.http;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import org.restexpress.Request;
-import org.restexpress.Response;
 import org.bson.types.ObjectId;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+import org.restexpress.Request;
+import org.restexpress.Response;
 import se.raxa.server.Database;
 import se.raxa.server.devices.Device;
 import se.raxa.server.devices.Executable;
@@ -19,24 +19,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Rasmus Eneman
  */
 @SuppressWarnings("UnusedDeclaration") // As reflection is used this is worthless
 class DeviceController {
+    private static final Logger LOGGER = Logger.getLogger(DeviceController.class.getName());
 
     public List<Map<String, Object>> read(Request request, Response response) {
         List<Map<String, Object>> list = new ArrayList<>();
+        String type = request.getHeader("type");
         try {
-            String type = request.getHeader("type");
             for (Device device : Devices.getDevicesByType(type)) {
                 list.add(device.read());
             }
-        } catch (Exception e) { //TODO Fix error handling
+        } catch (Exception e) {
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.setException(e);
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, String.format("Error getting devices by type \"%s\"", type), e);
         }
         return list;
     }
@@ -47,13 +50,12 @@ class DeviceController {
             return Devices.getDeviceById(new ObjectId(id)).read();
         } catch (NotFoundException e) {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
-            return null;
-        } catch (Exception e) { //TODO Fix error handling
+        } catch (ClassCreationException | BadPluginException e) {
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.setException(e);
-            e.printStackTrace();
-            return null;
+            LOGGER.log(Level.WARNING, String.format("Error getting device by id \"%s\"", id), e);
         }
+        return null;
     }
 
     public Object create(Request request, Response response) {
@@ -73,10 +75,10 @@ class DeviceController {
         } catch (IllegalArgumentException e) {
             response.setResponseStatus(HttpResponseStatus.BAD_REQUEST);
             return e.getMessage();
-        } catch (ClassCreationException | BadPluginException e) { //TODO Fix error handling
+        } catch (ClassCreationException | BadPluginException e) {
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.setException(e);
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, String.format("Error creating device by type \"%s\"", type), e);
             return e.getMessage();
         }
     }
@@ -97,10 +99,10 @@ class DeviceController {
         } catch (NotFoundException e) {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
             return null;
-        } catch (ClassCreationException | BadPluginException e) { //TODO Fix error handling
+        } catch (ClassCreationException | BadPluginException e) {
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.setException(e);
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, String.format("Error getting device by id \"%s\"", id), e);
             return null;
         }
     }
@@ -126,10 +128,14 @@ class DeviceController {
             }
         } catch (NotFoundException e) {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
-        } catch (ExecutionException | ClassCreationException e) { //TODO Fix error handling
+        } catch (ExecutionException e) {
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.setException(e);
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, String.format("Error executing action \"%s\" on device by id \"%s\"", action, id), e);
+        } catch (ClassCreationException e) {
+            response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            response.setException(e);
+            LOGGER.log(Level.WARNING, String.format("Error getting device by id \"%s\"", id), e);
         }
     }
 }
