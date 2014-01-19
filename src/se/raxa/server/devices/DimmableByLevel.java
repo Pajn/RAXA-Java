@@ -2,6 +2,7 @@ package se.raxa.server.devices;
 
 import se.raxa.server.exceptions.StatusChangeException;
 import se.raxa.server.plugins.devices.AddAction;
+import se.raxa.server.plugins.devices.GetProperty;
 
 /**
  * @author Rasmus Eneman
@@ -21,9 +22,17 @@ public interface DimmableByLevel extends Lamp {
     }
 
     /**
-     * @return The lowest current dim level
+     * @return The current dim level
      */
     public abstract int getDimLevel();
+
+    /**
+     * @return The current dim level
+     */
+    @GetProperty("dim_level_status")
+    public default int getDimLevelProperty() {
+        return getDimLevel();
+    }
 
     /**
      * Set the dim level

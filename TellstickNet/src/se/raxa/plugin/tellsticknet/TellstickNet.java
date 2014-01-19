@@ -3,6 +3,7 @@ package se.raxa.plugin.tellsticknet;
 import se.raxa.server.devices.Connector;
 import se.raxa.server.devices.helpers.AbstractDevice;
 import se.raxa.server.exceptions.ClassCreationException;
+import se.raxa.server.plugins.devices.GetProperty;
 
 import java.util.Map;
 
@@ -12,31 +13,17 @@ import java.util.Map;
 public class TellstickNet extends AbstractDevice implements Connector {
 
     /**
-     * Called when a new object is created
-     * Always throws ClassCreationException
+     * Called when the device is about to be created
      *
-     * @param kwargs A map with arguments for creation
+     * @param propertyValues
+     *         A map with values for all properties to be set
      *
-     * @throws ClassCreationException If the class somehow can't be created
+     * @throws ClassCreationException
+     *         As devices of this class can't be manually created
      */
     @Override
-    public void onCreate(Map<String, String> kwargs) throws ClassCreationException {
+    public void create(Map<String, String> propertyValues) throws ClassCreationException {
         throw new ClassCreationException("Class can't be manually created");
-    }
-
-    /**
-     * Called when the device should be presented
-     *
-     * @return A map with details that should be outputted
-     */
-    @Override
-    public Map<String, Object> describe() {
-        Map<String, Object> map = super.describe();
-
-        map.put("code", getCode());
-        map.put("version", getVersion());
-
-        return map;
     }
 
     /**
@@ -50,6 +37,7 @@ public class TellstickNet extends AbstractDevice implements Connector {
     /**
      * @return The unique activation code
      */
+    @GetProperty("code")
     public String getCode() {
         return getDBObj().getString("code");
     }
@@ -57,6 +45,7 @@ public class TellstickNet extends AbstractDevice implements Connector {
     /**
      * @return The firmware version
      */
+    @GetProperty("version")
     public String getVersion() {
         return getDBObj().getString("version");
     }

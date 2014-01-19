@@ -10,6 +10,7 @@ import se.raxa.server.Database;
 import se.raxa.server.devices.Device;
 import se.raxa.server.devices.Executable;
 import se.raxa.server.devices.helpers.Devices;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.ExecutionException;
 import se.raxa.server.exceptions.NotFoundException;
@@ -30,7 +31,7 @@ public class DeviceController {
         try {
             String type = request.getHeader("type");
             for (Device device : Devices.getDevicesByType(type)) {
-                list.add(device.describe());
+                list.add(device.read());
             }
         } catch (Exception e) { //TODO Fix error handling
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
@@ -43,7 +44,7 @@ public class DeviceController {
     public Map<String, Object> readSingle(Request request, Response response) {
         String id = request.getHeader("deviceID", "no id provided");
         try {
-            return Devices.getDeviceById(new ObjectId(id)).describe();
+            return Devices.getDeviceById(new ObjectId(id)).read();
         } catch (NotFoundException e) {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
             return null;
@@ -56,24 +57,23 @@ public class DeviceController {
     }
 
     public Object create(Request request, Response response) {
-        String type = request.getHeader("type");
-        String name = request.getHeader("name");
-        Map<String, String> kwargs = new HashMap<>();
+        String type = request.getHeader("type", "no type provided");
+        Map<String, String> propertyValues = new HashMap<>();
 
         for (String header : request.getHeaderNames()) {
-            kwargs.put(header, request.getHeader(header));
+            propertyValues.put(header, request.getHeader(header));
         }
 
         try {
-            Device device = Devices.createDeviceOfType(type, name, kwargs);
+            Device device = Devices.createDeviceOfType(type, propertyValues);
             device.save();
 
             response.setResponseCreated();
-            return device.describe();
+            return device.read();
         } catch (IllegalArgumentException e) {
             response.setResponseStatus(HttpResponseStatus.BAD_REQUEST);
             return e.getMessage();
-        } catch (ClassCreationException e) { //TODO Fix error handling
+        } catch (ClassCreationException | BadPluginException e) { //TODO Fix error handling
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.setException(e);
             e.printStackTrace();
@@ -83,21 +83,21 @@ public class DeviceController {
 
     public Map<String, Object> update(Request request, Response response) {
         String id = request.getHeader("deviceID", "no id provided");
-        Map<String, String> kwargs = new HashMap<>();
+        Map<String, String> propertyValues = new HashMap<>();
 
         for (String header : request.getHeaderNames()) {
-            kwargs.put(header, request.getHeader(header));
+            propertyValues.put(header, request.getHeader(header));
         }
 
         try {
             Device device =  Devices.getDeviceById(new ObjectId(id));
-            device.onUpdate(kwargs);
+            device.update(propertyValues);
             device.save();
-            return device.describe();
+            return device.read();
         } catch (NotFoundException e) {
             response.setResponseStatus(HttpResponseStatus.NOT_FOUND);
             return null;
-        } catch (ClassCreationException e) { //TODO Fix error handling
+        } catch (ClassCreationException | BadPluginException e) { //TODO Fix error handling
             response.setResponseStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.setException(e);
             e.printStackTrace();

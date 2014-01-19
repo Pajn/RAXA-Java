@@ -2,8 +2,11 @@ package se.raxa.server.devices;
 
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
+import se.raxa.server.plugins.devices.GetProperty;
+import se.raxa.server.plugins.devices.SetProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,57 +19,6 @@ import static se.raxa.server.devices.helpers.Devices.getDeviceById;
  * @author Rasmus Eneman
  */
 public interface Output extends Device {
-
-    /**
-     * Called when a new object is created
-     *
-     * @param kwargs A map with arguments for creation
-     *
-     * @throws ClassCreationException If the class somehow can't be created
-     * @throws IllegalArgumentException If at least one of the kwargs are invalid (missing or illegal value)
-     *
-     */
-    @Override
-    public default void onCreate(Map<String, String> kwargs) throws ClassCreationException, IllegalArgumentException {
-        Device.super.onCreate(kwargs);
-
-        if (kwargs.containsKey("connector")) {
-            setConnector(new ObjectId(kwargs.get("connector")));
-        } else {
-            if (!getSupportedConnectors().contains(null)) {
-                throw new IllegalArgumentException("A connector is required by this plugin");
-            }
-        }
-    }
-
-    /**
-     * Called when the device is updated
-     *
-     * @param kwargs A map with arguments to update
-     *
-     * @throws IllegalArgumentException If at least one of the kwargs are invalid
-     */
-    public default void onUpdate(Map<String, String> kwargs) throws IllegalArgumentException {
-        Device.super.onUpdate(kwargs);
-
-        if (kwargs.containsKey("connector")) {
-            setConnector(new ObjectId(kwargs.get("connector")));
-        }
-    }
-
-    /**
-     * Called when the device should be presented
-     *
-     * @return A map with details that should be outputted
-     */
-    @Override
-    public default Map<String, Object> describe() {
-        Map<String, Object> map = Device.super.describe();
-
-        map.put("connector", getDBObj().get("connector"));
-
-        return map;
-    }
 
     /**
      * @return A list of supported Connector classes, contains null if supports not having one
@@ -103,6 +55,20 @@ public interface Output extends Device {
         return getConnector(Connector.class);
     }
 
+    /**
+     * @return The Outputs Connector as a property value or null if not available
+     */
+    @GetProperty("connector")
+    public default Map<String, Object> getConnectorProperty() {
+        try {
+            Connector connector = getConnector(Connector.class);
+            return connector == null ? null : connector.read();
+        } catch (ClassCreationException | BadPluginException e) {
+            e.printStackTrace(); //TODO handle in a good way
+            return null;
+        }
+    }
+
     public default void setConnector(ObjectId id) {
         boolean isSupported = false;
         Device connector;
@@ -120,9 +86,17 @@ public interface Output extends Device {
         }
 
         if (isSupported) {
-            getDBObj().put("connector", connector.describe());
+            getDBObj().put("connector", connector.getDBObj());
         } else {
             throw new IllegalArgumentException("Connector is not supported");
         }
+    }
+
+    @SetProperty(value = "connector", required = false)
+    public default void setConnector(String id) {
+        if (!getSupportedConnectors().contains(null)) {
+            throw new IllegalArgumentException("A connector is required for this device");
+        }
+        setConnector(new ObjectId(id));
     }
 }

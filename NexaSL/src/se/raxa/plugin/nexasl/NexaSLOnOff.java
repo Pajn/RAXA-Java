@@ -6,8 +6,10 @@ import se.raxa.server.Database;
 import se.raxa.server.devices.Lamp;
 import se.raxa.server.devices.helpers.AbstractDevice;
 import se.raxa.server.devices.helpers.Status;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
+import se.raxa.server.plugins.devices.GetProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +22,20 @@ import java.util.Random;
 public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
 
     /**
-     * Called when a new object is created
-     * Generates a unique random id as sender id
+     * Called when the device is about to be created
      *
-     * @param kwargs A map with arguments for creation
+     * @param propertyValues
+     *         A map with values for all properties to be set
      *
-     * @throws ClassCreationException If the class somehow can't be created
-     * @throws IllegalArgumentException If at least one of the kwargs are invalid (missing or illegal value)
+     * @throws IllegalArgumentException
+     *         if a property have an invalid value or if a required property isn't specified
+     * @throws ClassCreationException If the device can't be created
+     * @throws BadPluginException If the plugin doesn't handle as expected
      */
     @Override
-    public void onCreate(Map<String, String> kwargs) throws ClassCreationException {
-        super.onCreate(kwargs);
+    public void create(Map<String, String> propertyValues) throws IllegalArgumentException, ClassCreationException,
+            BadPluginException {
+        super.create(propertyValues);
 
         Random r = new Random();
         int rand;
@@ -45,20 +50,6 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
         } while (Database.devices().findOne(query) != null);
 
         this.getDBObj().put("sender_id", rand);
-    }
-
-    /**
-     * Called when the device should be presented
-     *
-     * @return A map with details that should be outputted
-     */
-    @Override
-    public Map<String, Object> describe() {
-        Map<String, Object> map = super.describe();
-
-        map.put("senderID", getSenderID());
-
-        return map;
     }
 
     /**
@@ -85,6 +76,7 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
      * @return The unique sender id of the device
      */
     @Override
+    @GetProperty("sender_id")
     public long getSenderID() {
         return getDBObj().getLong("sender_id");
     }

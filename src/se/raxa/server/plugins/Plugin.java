@@ -1,5 +1,7 @@
 package se.raxa.server.plugins;
 
+import se.raxa.server.exceptions.BadPluginException;
+
 /**
  * A interface all plugins should implement
  *
@@ -14,5 +16,5 @@ public interface Plugin {
     /**
      * Called when the plugin is loaded
      */
-    void init();
+    void init() throws BadPluginException;
 }

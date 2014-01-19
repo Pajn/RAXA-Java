@@ -2,9 +2,12 @@ package se.raxa.server.devices;
 
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ClassCreationException;
+import se.raxa.server.plugins.devices.DeviceClasses;
+import se.raxa.server.plugins.devices.GetProperty;
+import se.raxa.server.plugins.devices.SetProperty;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -13,41 +16,41 @@ import java.util.Map;
 public interface Device {
 
     /**
-     * Called when a new object is created
+     * Called when the device is about to be created
      *
-     * @param kwargs A map with arguments for creation
+     * @param propertyValues A map with values for all properties to be set
      *
-     * @throws ClassCreationException If the class somehow can't be created
-     * @throws IllegalArgumentException If at least one of the kwargs are invalid (missing or illegal value)
+     * @throws IllegalArgumentException if a property have an invalid value or
+     *                                  if a required property isn't specified
+     * @throws ClassCreationException If the device can't be created
+     * @throws BadPluginException If the plugin doesn't handle as expected
      */
-    public default void onCreate(Map<String, String> kwargs) throws ClassCreationException, IllegalArgumentException {}
+    public default void create(Map<String, String> propertyValues) throws IllegalArgumentException, ClassCreationException,
+            BadPluginException {
+        DeviceClasses.getDescriptor(getClass()).setProperties(this, propertyValues, true);
+    }
+
+    /**
+     * Called when the device is read
+     *
+     * @return A map with values for all properties
+     *
+     * @throws BadPluginException If the plugin doesn't handle as expected
+     */
+    public default Map<String, Object> read() throws BadPluginException {
+        return DeviceClasses.getDescriptor(getClass()).getProperties(this);
+    }
 
     /**
      * Called when the device is updated
      *
-     * @param kwargs A map with arguments to update
+     * @param propertyValues A map with values for all properties to update
      *
-     * @throws IllegalArgumentException If at least one of the kwargs are invalid
+     * @throws IllegalArgumentException if a property have an invalid value
+     * @throws BadPluginException If the plugin doesn't handle as expected
      */
-    public default void onUpdate(Map<String, String> kwargs) throws IllegalArgumentException {
-        if (kwargs.containsKey("name")) {
-            setName(kwargs.get("name"));
-        }
-    }
-
-    /**
-     * Called when the device should be presented
-     *
-     * @return A map with details that should be outputted
-     */
-    public default Map<String, Object> describe() {
-        Map<String, Object> map = new HashMap<>();
-
-        map.put("id", getId().toStringMongod());
-        map.put("name", getName());
-        map.put("type", getType());
-
-        return map;
+    public default void update(Map<String, String> propertyValues) throws BadPluginException {
+        DeviceClasses.getDescriptor(getClass()).setProperties(this, propertyValues, false);
     }
 
     /**
@@ -66,9 +69,25 @@ public interface Device {
     public abstract ObjectId getId();
 
     /**
+     * @return The unique id as a Mongod String
+     */
+    @GetProperty("id")
+    public default String getIdProperty() {
+        return getId().toStringMongod();
+    }
+
+    /**
      * @return The name
      */
     public abstract String getName();
+
+    /**
+     * @return The name
+     */
+    @GetProperty("name")
+    public default String getNameProperty() {
+        return getName();
+    }
 
     /**
      * @param name The name to set
@@ -76,6 +95,16 @@ public interface Device {
      * @throws IllegalArgumentException If the name already is in use
      */
     public abstract void setName(String name) throws IllegalArgumentException;
+
+    /**
+     * @param name The name to set
+     *
+     * @throws IllegalArgumentException If the name already is in use
+     */
+    @SetProperty("name")
+    public default void setNameProperty(String name) {
+        setName(name);
+    }
 
     /**
      * @return An array of types, ordered by position in tree

@@ -3,6 +3,7 @@ package se.raxa.server.devices;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.StatusChangeException;
 import se.raxa.server.plugins.devices.AddAction;
+import se.raxa.server.plugins.devices.GetProperty;
 
 /**
  * @author Rasmus Eneman
@@ -12,8 +13,13 @@ public interface Lamp extends Output, Executable {
     /**
      * @return True if the lamp is turned on
      */
+    @GetProperty("lamp_status")
     public default boolean isTurnedOn() {
-        return getDBObj().getInt("status") != Status.Off.getValue();
+        try {
+            return getDBObj().getInt("status") != Status.Off.getValue();
+        } catch (NullPointerException e) {
+            return false; //todo log?
+        }
     }
 
     /**

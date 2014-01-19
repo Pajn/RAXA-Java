@@ -7,6 +7,7 @@ import com.mongodb.DBObject;
 import org.bson.types.ObjectId;
 import se.raxa.server.Database;
 import se.raxa.server.devices.Device;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
 import se.raxa.server.plugins.devices.DeviceClasses;
@@ -58,16 +59,15 @@ public class Devices {
      * Gets all Devices from the database implementing the specified type
      *
      * @param type The type of the Device
-     * @param name The name of the Device
      *
      * @throws ClassCreationException
+     * @throws BadPluginException If the plugin doesn't handle as expected
      */
-    public static <T extends Device> T createDeviceOfType(Class<T> type, String name, Map<String, String> kwargs) throws
-            ClassCreationException, IllegalArgumentException {
+    public static <T extends Device> T createDeviceOfType(Class<T> type, Map<String, String> propertyValues) throws
+            ClassCreationException, IllegalArgumentException, BadPluginException {
         try {
             T device = type.getConstructor().newInstance();
-            device.setName(name);
-            device.onCreate(kwargs);
+            device.create(propertyValues);
             return device;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new ClassCreationException("error", e); //TODO nice message
@@ -78,13 +78,13 @@ public class Devices {
      * Gets all Devices from the database implementing the specified type
      *
      * @param type The type of the Device
-     * @param name The name of the Device
      *
      * @throws ClassCreationException
+     * @throws BadPluginException If the plugin doesn't handle as expected
      */
-    public static Device createDeviceOfType(String type, String name, Map<String, String> kwargs) throws
-            ClassCreationException, IllegalArgumentException {
-        return createDeviceOfType(DeviceClasses.getClass(type), name, kwargs);
+    public static Device createDeviceOfType(String type, Map<String, String> propertyValues) throws
+            ClassCreationException, IllegalArgumentException, BadPluginException {
+        return createDeviceOfType(DeviceClasses.getClass(type), propertyValues);
     }
 
     /**

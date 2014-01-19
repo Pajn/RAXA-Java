@@ -1,6 +1,7 @@
 package se.raxa.server.plugins.devices;
 
 import se.raxa.server.devices.Executable;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ExecutionException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +20,7 @@ public class Action {
     ActionType type;
     Method method;
 
-    public Action(AddAction annotation, Method method) {
+    public Action(AddAction annotation, Method method) throws BadPluginException {
         name = annotation.name();
         this.method = method;
 
@@ -29,6 +30,8 @@ public class Action {
                 type = new StringArray(annotation.arguments());
             } else if (argumentClass == int.class) {
                 type = new Int(annotation.arguments());
+            } else {
+                throw new BadPluginException(String.format("An action of type \"%s\" is not supported", argumentClass.getSimpleName()));
             }
         }
 

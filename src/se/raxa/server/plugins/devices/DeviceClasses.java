@@ -1,6 +1,7 @@
 package se.raxa.server.plugins.devices;
 
 import se.raxa.server.devices.Device;
+import se.raxa.server.exceptions.BadPluginException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,8 +36,10 @@ public class DeviceClasses {
      * Register a new Device plugin class
      *
      * @param deviceClass The class of the plugin
+     *
+     * @throws BadPluginException If the plugin doesn't handle as expected
      */
-    public static <T extends Device> void registerDevice(Class<T> deviceClass) {
+    public static <T extends Device> void registerDevice(Class<T> deviceClass) throws BadPluginException {
         deviceClasses.put(deviceClass.getName(), new DeviceClassDescriptor(deviceClass));
     }
 }
