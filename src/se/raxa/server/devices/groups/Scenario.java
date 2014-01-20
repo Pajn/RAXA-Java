@@ -7,6 +7,8 @@ import se.raxa.server.devices.Executable;
 import se.raxa.server.devices.helpers.AbstractDevice;
 import se.raxa.server.devices.helpers.Member;
 import se.raxa.server.exceptions.ExecutionException;
+import se.raxa.server.plugins.devices.AddAction;
+import se.raxa.server.plugins.devices.DeviceClasses;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -22,10 +24,9 @@ public class Scenario extends AbstractDevice implements Group<Executable>, Execu
 
     /**
      * Executes the Scenario
-     *
-     * @param action Ignored
      */
-    public void execute(Object action) throws ExecutionException {
+    @AddAction(name = "scenario:execute")
+    public void execute() throws ExecutionException {
         EXECUTOR.execute(() -> {
             for (Member member : getMembers()) {
                 try {
@@ -40,12 +41,16 @@ public class Scenario extends AbstractDevice implements Group<Executable>, Execu
         });
     }
 
-    public void addMember(Executable device, Object action) {
-        Member<Executable> member = new Member<>(device);
-        member.put("action", action);
-        addMember(member);
+    public void addMember(Executable device, String action) {
+        if (DeviceClasses.getDescriptor(getClass()).supportsAction(action)) {
+            Member<Executable> member = new Member<>(device);
+            member.put("action", action);
+            addMember(member);
 
-        DBObject query = new BasicDBObject("_id", getId());
-        Database.devices().update(query, new BasicDBObject("$push", new BasicDBObject("members", member.getDbObject())));
+            DBObject query = new BasicDBObject("_id", getId());
+            Database.devices().update(query, new BasicDBObject("$push", new BasicDBObject("members", member.getDbObject())));
+        } else {
+            throw new IllegalArgumentException("Action is not supported");
+        }
     }
 }

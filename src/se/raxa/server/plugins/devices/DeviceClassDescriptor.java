@@ -110,4 +110,18 @@ public class DeviceClassDescriptor {
     public List<Action> getSupportedActions() {
         return supportedActions;
     }
+
+    /**
+     * @param action A string representing the action
+     *
+     * @return true if action is supported
+     */
+    public boolean supportsAction(String action) {
+        for (Action a : supportedActions) {
+            if (a.validate(action)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

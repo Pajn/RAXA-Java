@@ -41,6 +41,28 @@ public class Action {
     }
 
     /**
+     * Validate the action String
+     *
+     * @param action A string representing the action
+     *
+     * @return true if the string action matches this Action instance
+     *
+     * @throws IllegalArgumentException If the action isn't well formed
+     */
+    public boolean validate(String action) throws IllegalArgumentException {
+        if (name.equals(action)) {
+            return true;
+        } else {
+            try {
+                String[] splitAction = COLON.split(action);
+                return this.name.equals(splitAction[0]) && type.validate(splitAction[1]);
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
+                throw new IllegalArgumentException("action is not well formed", e);
+            }
+        }
+    }
+
+    /**
      * Execute an action on a Executable Device
      *
      * @param action A string representing the action to execute
@@ -62,7 +84,7 @@ public class Action {
         } else {
             try {
                 String[] splitAction = COLON.split(action);
-                return this.name.equals(splitAction[0]) && type.execute(splitAction[1], object);
+                return this.name.equals(splitAction[0]) && type.validateAndExecute(splitAction[1], object);
             } catch (NullPointerException | IndexOutOfBoundsException e) {
                 throw new IllegalArgumentException("action is not well formed", e);
             }
@@ -70,7 +92,8 @@ public class Action {
     }
 
     private interface ActionType {
-        boolean execute(String value, Executable object) throws ExecutionException;
+        boolean validate(String value);
+        boolean validateAndExecute(String value, Executable object) throws ExecutionException;
     }
 
     private class Int implements ActionType {
@@ -97,16 +120,21 @@ public class Action {
         }
 
         @Override
-        public boolean execute(String value, Executable object) throws ExecutionException {
+        public boolean validate(String value) {
             if (!INTEGER.matcher(value).matches()) {
                 return false;
             }
             Integer i = Integer.parseInt(value);
 
-            if ((maxValue != null && minValue <= i && i <= maxValue) ||
-                (maxValue == null && (minValue == null || i >= minValue))) {
+            return (maxValue != null && minValue <= i && i <= maxValue) ||
+                    (maxValue == null && (minValue == null || i >= minValue));
+        }
+
+        @Override
+        public boolean validateAndExecute(String value, Executable object) throws ExecutionException {
+            if (validate(value)) {
                 try {
-                    method.invoke(object, i);
+                    method.invoke(object, Integer.parseInt(value));
                     return true;
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new ExecutionException(e);
