@@ -109,6 +109,7 @@ public interface Device {
     /**
      * @return An array of types, ordered by rough position in tree
      */
+    @GetProperty("type")
     public default String[] getType() {
         return DeviceClasses.getDescriptor(getClass()).getTypes();
     }

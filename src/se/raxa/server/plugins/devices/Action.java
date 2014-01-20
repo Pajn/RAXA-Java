@@ -6,7 +6,6 @@ import se.raxa.server.exceptions.ExecutionException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -20,21 +19,25 @@ public class Action {
     private ActionType type;
     private Method method;
 
+    public final String string;
+
     public Action(AddAction annotation, Method method) throws BadPluginException {
         name = annotation.name();
         this.method = method;
 
-        if (!name.contains(":")) {
+        if (name.contains(":") && method.getParameterCount() == 0) {
+            string = name;
+        } else if (!name.contains(":") && method.getParameterCount() == 1) {
             Class argumentClass = method.getParameterTypes()[0];
-            if (argumentClass == String[].class) {
-                type = new StringArray(annotation.arguments());
-            } else if (argumentClass == int.class) {
+            if (argumentClass == int.class) {
                 type = new Int(annotation.arguments());
             } else {
                 throw new BadPluginException(String.format("An action of type \"%s\" is not supported", argumentClass.getSimpleName()));
             }
+            string = String.format("%s:%s", name, type.toString());
+        } else {
+            throw new BadPluginException("An action can only receive one parameter if name doesn't contain : or zero parameters if i does");
         }
-
     }
 
     /**
@@ -70,26 +73,6 @@ public class Action {
         boolean execute(String value, Executable object) throws ExecutionException;
     }
 
-    private class StringArray implements ActionType {
-        String[] keys;
-
-        public StringArray(String[] arguments) {
-            keys = arguments;
-        }
-
-        public boolean execute(String value, Executable object) throws ExecutionException {
-            if (Arrays.asList(keys).contains(value)) {
-                try {
-                    method.invoke(object, value);
-                    return true;
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new ExecutionException(e);
-                }
-            }
-            return false;
-        }
-    }
-
     private class Int implements ActionType {
         Integer minValue;
         Integer maxValue;
@@ -113,6 +96,7 @@ public class Action {
             }
         }
 
+        @Override
         public boolean execute(String value, Executable object) throws ExecutionException {
             if (!INTEGER.matcher(value).matches()) {
                 return false;
@@ -129,6 +113,17 @@ public class Action {
                 }
             }
             return false;
+        }
+
+        @Override
+        public String toString() {
+            if (maxValue != null) {
+                return String.format("int:%d:%d", minValue, maxValue);
+            } else if (minValue != null) {
+                return String.format("int:%d", minValue);
+            } else {
+                return "int";
+            }
         }
     }
 }

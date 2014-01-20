@@ -1,8 +1,10 @@
 package se.raxa.server.devices;
 
 import se.raxa.server.plugins.devices.Action;
+import se.raxa.server.plugins.devices.DeviceClassDescriptor;
 import se.raxa.server.plugins.devices.DeviceClasses;
 import se.raxa.server.exceptions.ExecutionException;
+import se.raxa.server.plugins.devices.GetProperty;
 
 /**
  * @author Rasmus Eneman
@@ -22,5 +24,20 @@ public interface Executable extends Device {
             }
         }
         throw new IllegalArgumentException("Action not supported");
+    }
+
+    /**
+     * @return An array of supported actions
+     */
+    @GetProperty("actions")
+    public default String[] getActions() { //todo how to best handle this?
+        DeviceClassDescriptor descriptor = DeviceClasses.getDescriptor(getClass());
+        String[] actions = new String[descriptor.getSupportedActions().size()];
+
+        for (int i = 0; i < actions.length; i++) {
+            actions[i] = descriptor.getSupportedActions().get(i).string;
+        }
+
+        return actions;
     }
 }
