@@ -1,20 +1,19 @@
 package se.raxa.server.plugins.devices;
 
+import org.apache.commons.lang3.ClassUtils;
 import se.raxa.server.devices.Device;
 import se.raxa.server.exceptions.BadPluginException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Rasmus Eneman
  */
 public class DeviceClassDescriptor {
     private Class<? extends Device> clazz;
+    private String[] types;
     private List<Getter> getters = new ArrayList<>();
     private List<Setter> setters = new ArrayList<>();
     private List<Action> supportedActions = new ArrayList<>();
@@ -22,10 +21,24 @@ public class DeviceClassDescriptor {
     public DeviceClassDescriptor(Class<? extends Device> clazz) throws BadPluginException {
         this.clazz = clazz;
 
-        this.collectSupportedActions();
+        this.collectTypes();
+        this.collectAnnotations();
     }
 
-    private void collectSupportedActions() throws BadPluginException {
+    private void collectTypes() {
+        Collection<String> typeList = new ArrayList<>();
+        typeList.add(clazz.getName());
+
+        for (Class parent : ClassUtils.getAllInterfaces(clazz)) {
+            if (Device.class.isAssignableFrom(parent)) {
+                typeList.add(parent.getName());
+            }
+        }
+
+        types = typeList.toArray(new String[typeList.size()]);
+    }
+
+    private void collectAnnotations() throws BadPluginException {
         for (Method method : clazz.getMethods()) {
             for (Annotation annotation : method.getAnnotations()) {
                 if (annotation instanceof GetProperty) {
@@ -44,6 +57,13 @@ public class DeviceClassDescriptor {
      */
     public Class<? extends Device> getClazz() {
         return clazz;
+    }
+
+    /**
+     * @return An array of types, ordered by rough position in tree
+     */
+    public String[] getTypes() {
+        return types;
     }
 
     /**

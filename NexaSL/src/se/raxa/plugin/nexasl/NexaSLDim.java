@@ -14,14 +14,6 @@ import se.raxa.server.plugins.devices.AddAction;
 public class NexaSLDim extends NexaSLOnOff implements DimmableByLevel, DimmableByTime {
 
     /**
-     * @return An array of types, ordered by position in tree
-     */
-    @Override
-    public String[] getType() {
-        return new String[] {"NexaSLDim", "NexaSL", "DimmableByLevel", "DimmableByTime", "Lamp", "Executable", "Output"};
-    }
-
-    /**
      * @return The lowest current dim level
      */
     @Override

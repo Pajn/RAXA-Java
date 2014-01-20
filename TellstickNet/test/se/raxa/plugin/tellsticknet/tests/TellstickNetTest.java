@@ -13,8 +13,6 @@ import se.raxa.plugin.tellsticknet.TellstickNetService;
 import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -31,11 +29,6 @@ public class TellstickNetTest {
         dbObject.put("code", "ABCDEF");
         dbObject.put("version", "RAXA1");
         tellstickNet = Devices.createDeviceFromDbObject(TellstickNet.class, dbObject);
-    }
-
-    @Test
-    public void testGetType() throws Exception {
-        assertEquals(true, Arrays.equals(new String[]{"TellstickNet", "Connector"}, tellstickNet.getType()));
     }
 
     @Test

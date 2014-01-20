@@ -64,11 +64,6 @@ public abstract class AbstractDevice implements Device {
     }
 
     /**
-     * @return An array of types, ordered by position in tree
-     */
-    public abstract String[] getType();
-
-    /**
      * Save to the database
      */
     public final void save() {

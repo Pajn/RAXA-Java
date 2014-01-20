@@ -21,14 +21,6 @@ public class Scenario extends AbstractDevice implements Group<Executable>, Execu
     private static final Logger LOGGER = Logger.getLogger(Scenario.class.getName());
 
     /**
-     * @return An array of types, ordered by position in tree
-     */
-    @Override
-    public String[] getType() {
-        return new String[] {"Scenario", "Executable", "Group"};
-    }
-
-    /**
      * Executes the Scenario
      *
      * @param action Ignored

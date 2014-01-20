@@ -18,14 +18,6 @@ import java.util.List;
 public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
 
     /**
-     * @return An array of types, ordered by position in tree
-     */
-    @Override
-    public String[] getType() {
-        return new String[] {"NexaSCOnOff", "Lamp", "Executable", "Output"};
-    }
-
-    /**
      * @return A list of supported Connector classes, contains null if supports not having one
      */
     @Override

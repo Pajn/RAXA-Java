@@ -27,14 +27,6 @@ public class TellstickNet extends AbstractDevice implements Connector {
     }
 
     /**
-     * @return An array of types, ordered by position in tree
-     */
-    @Override
-    public String[] getType() {
-        return new String[] {"TellstickNet", "Connector"};
-    }
-
-    /**
      * @return The unique activation code
      */
     @GetProperty("code")

@@ -5,6 +5,7 @@ sourceCompatibility = 1.8
 dependencies {
     compile 'org.mongodb:mongo-java-driver:2.11.3'
     compile 'com.strategicgains:RestExpress:0.10.0'
+    compile 'org.apache.commons:commons-lang3:3.2'
 }
 
 allprojects {
