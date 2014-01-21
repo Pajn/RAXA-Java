@@ -1,11 +1,11 @@
 package se.raxa.server.plugins.devices;
 
 import se.raxa.server.devices.Executable;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ExecutionException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -15,23 +15,58 @@ public class Action {
     private static final Pattern COLON = Pattern.compile(":");
     private static final Pattern INTEGER = Pattern.compile("-?\\d+");
 
-    String name;
-    ActionType type;
-    Method method;
+    private String name;
+    private ActionType type;
+    private Method method;
 
-    public Action(AddAction annotation, Method method) {
+    public final String string;
+
+    public Action(AddAction annotation, Method method) throws BadPluginException {
         name = annotation.name();
         this.method = method;
 
-        if (!name.contains(":")) {
-            Class argumentClass = method.getParameterTypes()[0];
-            if (argumentClass == String[].class) {
-                type = new StringArray(annotation.arguments());
-            } else if (argumentClass == int.class) {
-                type = new Int(annotation.arguments());
-            }
+        if (name.contains(":")) {
+            throw new BadPluginException("A action name can't contain \":\"");
         }
 
+        switch (method.getParameterCount()) {
+            case 0:
+                string = name.concat(":void");
+                break;
+            case 1:
+                Class argumentClass = method.getParameterTypes()[0];
+                if (argumentClass == int.class) {
+                    type = new Int(annotation.arguments());
+                } else {
+                    throw new BadPluginException(String.format("An action of type \"%s\" is not supported", argumentClass.getSimpleName()));
+                }
+                string = String.format("%s:%s", name, type.toString());
+                break;
+            default:
+                throw new BadPluginException("An action can only receive zero or one parameter");
+        }
+    }
+
+    /**
+     * Validate the action String
+     *
+     * @param action A string representing the action
+     *
+     * @return true if the string action matches this Action instance
+     *
+     * @throws IllegalArgumentException If the action isn't well formed
+     */
+    public boolean validate(String action) throws IllegalArgumentException {
+        if (name.equals(action)) {
+            return true;
+        } else {
+            try {
+                String[] splitAction = COLON.split(action);
+                return this.name.equals(splitAction[0]) && type.validate(splitAction[1]);
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
+                throw new IllegalArgumentException("action is not well formed", e);
+            }
+        }
     }
 
     /**
@@ -50,15 +85,13 @@ public class Action {
             try {
                 method.invoke(object);
                 return true;
-            } catch (IllegalAccessException e) {
-                throw new ExecutionException("IllegalAccessException when accessing action callback on plugin", e); //todo investigate what this means
-            } catch (InvocationTargetException e){
-                throw new ExecutionException(e.getCause().getMessage(), e);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new ExecutionException(e);
             }
         } else {
             try {
                 String[] splitAction = COLON.split(action);
-                return this.name.equals(splitAction[0]) && type.execute(splitAction[1], object);
+                return this.name.equals(splitAction[0]) && type.validateAndExecute(splitAction[1], object);
             } catch (NullPointerException | IndexOutOfBoundsException e) {
                 throw new IllegalArgumentException("action is not well formed", e);
             }
@@ -66,29 +99,8 @@ public class Action {
     }
 
     private interface ActionType {
-        boolean execute(String value, Executable object) throws ExecutionException;
-    }
-
-    private class StringArray implements ActionType {
-        String[] keys;
-
-        public StringArray(String[] arguments) {
-            keys = arguments;
-        }
-
-        public boolean execute(String value, Executable object) throws ExecutionException {
-            if (Arrays.asList(keys).contains(value)) {
-                try {
-                    method.invoke(object, value);
-                    return true;
-                } catch (IllegalAccessException e) {
-                    throw new ExecutionException("IllegalAccessException when accessing action callback on plugin", e); //todo investigate what this means
-                } catch (InvocationTargetException e){
-                    throw new ExecutionException(e.getCause().getMessage(), e);
-                }
-            }
-            return false;
-        }
+        boolean validate(String value);
+        boolean validateAndExecute(String value, Executable object) throws ExecutionException;
     }
 
     private class Int implements ActionType {
@@ -114,24 +126,39 @@ public class Action {
             }
         }
 
-        public boolean execute(String value, Executable object) throws ExecutionException {
+        @Override
+        public boolean validate(String value) {
             if (!INTEGER.matcher(value).matches()) {
                 return false;
             }
             Integer i = Integer.parseInt(value);
 
-            if ((maxValue != null && minValue <= i && i <= maxValue) ||
-                (maxValue == null && (minValue == null || i >= minValue))) {
+            return (maxValue != null && minValue <= i && i <= maxValue) ||
+                    (maxValue == null && (minValue == null || i >= minValue));
+        }
+
+        @Override
+        public boolean validateAndExecute(String value, Executable object) throws ExecutionException {
+            if (validate(value)) {
                 try {
-                    method.invoke(object, i);
+                    method.invoke(object, Integer.parseInt(value));
                     return true;
-                } catch (IllegalAccessException e) {
-                    throw new ExecutionException("IllegalAccessException when accessing action callback on plugin", e); //todo investigate what this means
-                } catch (InvocationTargetException e){
-                    throw new ExecutionException(e.getCause().getMessage(), e);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new ExecutionException(e);
                 }
             }
             return false;
+        }
+
+        @Override
+        public String toString() {
+            if (maxValue != null) {
+                return String.format("int:%d:%d", minValue, maxValue);
+            } else if (minValue != null) {
+                return String.format("int:%d", minValue);
+            } else {
+                return "int";
+            }
         }
     }
 }

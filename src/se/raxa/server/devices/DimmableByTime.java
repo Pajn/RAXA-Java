@@ -3,6 +3,7 @@ package se.raxa.server.devices;
 import se.raxa.server.plugins.devices.AddAction;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.StatusChangeException;
+import se.raxa.server.plugins.devices.GetProperty;
 
 /**
  * @author Rasmus Eneman
@@ -12,8 +13,13 @@ public interface DimmableByTime extends Lamp {
     /**
      * @return True if the lamp is dimming
      */
+    @GetProperty("dim_status")
     public default boolean isDimming() {
-        return getDBObj().getInt("status") == Status.Dim.ordinal();
+        try {
+            return getDBObj().getInt("status") == Status.Dim.ordinal();
+        } catch (NullPointerException e) {
+            return false; //todo log?
+        }
     }
 
     /**
@@ -43,7 +49,7 @@ public interface DimmableByTime extends Lamp {
      */
     public abstract void startDimming() throws StatusChangeException;
 
-    @AddAction(name="dim:start")
+    @AddAction(name="dim_start")
     public default void startDimmingCaller() throws StatusChangeException {
         startDimming();
     }
@@ -55,7 +61,7 @@ public interface DimmableByTime extends Lamp {
      */
     public abstract void stopDimming() throws StatusChangeException;
 
-    @AddAction(name="dim:stop")
+    @AddAction(name="dim_stop")
     public default void stopDimmingCaller() throws StatusChangeException {
         stopDimming();
     }

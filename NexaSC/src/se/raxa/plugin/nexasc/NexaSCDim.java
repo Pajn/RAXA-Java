@@ -12,14 +12,6 @@ import se.raxa.server.exceptions.StatusChangeException;
 public class NexaSCDim extends NexaSCOnOff implements DimmableByTime {
 
     /**
-     * @return An array of types, ordered by position in tree
-     */
-    @Override
-    public String[] getType() {
-        return new String[] {"NexaSCDim", "DimmableByTime", "Lamp", "Executable", "Output"};
-    }
-
-    /**
      * Called when dimming should be initiated
      *
      * @throws StatusChangeException If an error occurred (Example: Couldn't reach device or connector)

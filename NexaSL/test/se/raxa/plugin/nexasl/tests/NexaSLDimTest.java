@@ -7,8 +7,6 @@ import se.raxa.plugin.nexasl.NexaSLDim;
 import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.exceptions.ClassCreationException;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -20,18 +18,6 @@ public class NexaSLDimTest {
     @BeforeClass
     public static void oneTimeSetUp() throws ClassCreationException {
         nexaSLDim = Devices.createDeviceFromDbObject(NexaSLDim.class, new BasicDBObject());
-    }
-
-    @Test
-    public void testGetType() throws Exception {
-        assertEquals(true,
-                Arrays.equals(new String[]{"NexaSLDim", "NexaSL", "DimmableByLevel", "DimmableByTime", "Lamp", "Executable", "Output"},
-                              nexaSLDim.getType()));
-    }
-
-    @Test
-    public void testGetDimLevelMax() throws Exception {
-        assertEquals(15, nexaSLDim.getDimLevelMax());
     }
 
     @Test

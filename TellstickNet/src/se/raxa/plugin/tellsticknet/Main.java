@@ -1,5 +1,6 @@
 package se.raxa.plugin.tellsticknet;
 
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.plugins.Plugin;
 
 import java.net.SocketException;
@@ -16,7 +17,7 @@ public class Main implements Plugin {
     }
 
     @Override
-    public void init() {
+    public void init() throws BadPluginException {
         registerDevice(TellstickNet.class);
 
         try {

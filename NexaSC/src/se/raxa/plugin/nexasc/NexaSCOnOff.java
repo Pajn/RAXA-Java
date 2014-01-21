@@ -6,6 +6,11 @@ import se.raxa.server.devices.helpers.AbstractDevice;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
+import se.raxa.server.plugins.devices.GetProperty;
+import se.raxa.server.plugins.devices.SetProperty;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Rasmus Eneman
@@ -13,36 +18,50 @@ import se.raxa.server.exceptions.StatusChangeException;
 public class NexaSCOnOff extends AbstractDevice implements Lamp, NexaSC {
 
     /**
-     * @return An array of types, ordered by position in tree
+     * @return A list of supported Connector classes, contains null if supports not having one
      */
     @Override
-    public String[] getType() {
-        return new String[] {"NexaSCOnOff", "Lamp", "Executable", "Output"};
+    public List<Class> getSupportedConnectors() {
+        List <Class> classes = new ArrayList<>();
+
+        classes.add(TellstickNet.class);
+
+        return classes;
     }
 
     /**
      * @return The house code of the device
      */
     @Override
+    @GetProperty("house_code")
     public byte getHouse() {
         return (byte) getDBObj().getInt("house");
+    }
+
+    /**
+     * Set the house code of the device
+     * @param house The house code
+     */
+    @SetProperty(value = "house_code", arguments = {"0", "15"})
+    public void setHouse(int house) throws IllegalArgumentException {
+        getDBObj().put("house", house);
     }
 
     /**
      * @return The device code of the device
      */
     @Override
+    @GetProperty("device_code")
     public byte getDevice() {
         return (byte) getDBObj().getInt("device");
     }
 
     /**
-     * Set the house and device code of the device
-     * @param house The house code
+     * Set the device code of the device
      * @param device The device code
      */
-    public void setHouseDevice(byte house, byte device) {
-        getDBObj().put("house", house);
+    @SetProperty(value = "device_code", arguments = {"0", "15"})
+    public void setDevice(int device) throws IllegalArgumentException {
         getDBObj().put("device", device);
     }
 

@@ -3,6 +3,7 @@ package se.raxa.server.devices;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.StatusChangeException;
 import se.raxa.server.plugins.devices.AddAction;
+import se.raxa.server.plugins.devices.GetProperty;
 
 /**
  * @author Rasmus Eneman
@@ -10,15 +11,15 @@ import se.raxa.server.plugins.devices.AddAction;
 public interface Lamp extends Output, Executable {
 
     /**
-     * Called when a new object is created
-     */
-    default void onCreate() {}
-
-    /**
      * @return True if the lamp is turned on
      */
+    @GetProperty("lamp_status")
     public default boolean isTurnedOn() {
-        return getDBObj().getInt("status") != Status.Off.getValue();
+        try {
+            return getDBObj().getInt("status") != Status.Off.getValue();
+        } catch (NullPointerException e) {
+            return false; //todo log?
+        }
     }
 
     /**
@@ -46,7 +47,7 @@ public interface Lamp extends Output, Executable {
      */
     public abstract void turnOn() throws StatusChangeException;
 
-    @AddAction(name="lamp:on")
+    @AddAction(name="lamp_on")
     public default void turnOnCaller() throws StatusChangeException {
         turnOn();
     }
@@ -58,7 +59,7 @@ public interface Lamp extends Output, Executable {
      */
     public abstract void turnOff() throws StatusChangeException;
 
-    @AddAction(name="lamp:off")
+    @AddAction(name="lamp_off")
     public default void turnOffCaller() throws StatusChangeException {
         turnOff();
     }

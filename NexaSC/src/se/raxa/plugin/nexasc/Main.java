@@ -1,5 +1,6 @@
 package se.raxa.plugin.nexasc;
 
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.plugins.Plugin;
 
 import static se.raxa.server.plugins.devices.DeviceClasses.registerDevice;
@@ -14,7 +15,7 @@ public class Main implements Plugin {
     }
 
     @Override
-    public void init() {
+    public void init() throws BadPluginException {
         registerDevice(NexaSCDim.class);
         registerDevice(NexaSCOnOff.class);
     }

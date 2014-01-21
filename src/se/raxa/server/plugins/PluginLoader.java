@@ -1,5 +1,7 @@
 package se.raxa.server.plugins;
 
+import se.raxa.server.exceptions.BadPluginException;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -60,7 +62,11 @@ public class PluginLoader {
         while(iterator.hasNext()) {
             Plugin plugin = iterator.next();
             LOGGER.log(Level.INFO, "Initializing plugin \"{0}\"", plugin.getName());
-            plugin.init();
+            try {
+                plugin.init();
+            } catch (BadPluginException e) {
+                LOGGER.log(Level.WARNING, String.format("Error in plugin \"%s\"", plugin.getName()), e);
+            }
         }
     }
 }

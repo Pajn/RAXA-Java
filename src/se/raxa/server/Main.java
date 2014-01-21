@@ -1,6 +1,7 @@
 package se.raxa.server;
 
 import com.mongodb.MongoClient;
+import se.raxa.server.services.http.HTTPService;
 
 import java.net.UnknownHostException;
 
@@ -18,5 +19,7 @@ public class Main {
         }
 
         initPlugins();
+
+        new HTTPService().start();
     }
 }

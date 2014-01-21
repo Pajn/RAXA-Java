@@ -7,6 +7,7 @@ import com.mongodb.DBObject;
 import org.bson.types.ObjectId;
 import se.raxa.server.Database;
 import se.raxa.server.devices.Device;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.NotFoundException;
 import se.raxa.server.plugins.devices.DeviceClasses;
@@ -14,6 +15,7 @@ import se.raxa.server.plugins.devices.DeviceClasses;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rasmus Eneman
@@ -51,6 +53,38 @@ public class Devices {
     public static Device createDeviceFromDbObject(BasicDBObject obj) throws ClassCreationException {
         String type = (String) ((BasicDBList) obj.get("type")).get(0);
         return createDeviceFromDbObject(DeviceClasses.getClass(type), obj);
+    }
+
+    /**
+     * Gets all Devices from the database implementing the specified type
+     *
+     * @param type The type of the Device
+     *
+     * @throws ClassCreationException
+     * @throws BadPluginException If the plugin doesn't handle as expected
+     */
+    public static <T extends Device> T createDeviceOfType(Class<T> type, Map<String, String> propertyValues) throws
+            ClassCreationException, IllegalArgumentException, BadPluginException {
+        try {
+            T device = type.getConstructor().newInstance();
+            device.create(propertyValues);
+            return device;
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ClassCreationException("error", e); //TODO nice message
+        }
+    }
+
+    /**
+     * Gets all Devices from the database implementing the specified type
+     *
+     * @param type The type of the Device
+     *
+     * @throws ClassCreationException
+     * @throws BadPluginException If the plugin doesn't handle as expected
+     */
+    public static Device createDeviceOfType(String type, Map<String, String> propertyValues) throws
+            ClassCreationException, IllegalArgumentException, BadPluginException {
+        return createDeviceOfType(DeviceClasses.getClass(type), propertyValues);
     }
 
     /**
@@ -108,7 +142,11 @@ public class Devices {
      * @throws ClassCreationException If the class couldn't be created
      */
     public static Device getDeviceById(ObjectId id) throws NotFoundException, ClassCreationException {
-        return getDeviceById(Device.class, id);
+        BasicDBObject dbObject = queryDatabase("_id", id);
+
+        Class<? extends Device> clazz = DeviceClasses.getClass((String) ((BasicDBList) dbObject.get("type")).get(0));
+
+        return createDeviceFromDbObject(clazz, dbObject);
     }
 
     /**
@@ -135,6 +173,31 @@ public class Devices {
      */
     public static Device getDeviceByName(String name) throws NotFoundException, ClassCreationException {
         return getDeviceByName(Device.class, name);
+    }
+
+    /**
+     * Gets all Devices from the database implementing the specified type
+     *
+     * @param type The type of the Devices
+     *
+     * @throws ClassCreationException
+     */
+    public static List<Device> getDevicesByType(String type) throws ClassCreationException {
+        List<Device> devices = new ArrayList<>();
+
+        DBObject query = new BasicDBObject();
+
+        if (type != null && type.length() != 0) {
+            query.put("type", type);
+        }
+
+        try (DBCursor cursor = Database.devices().find(query)) {
+            for (DBObject dbObj : cursor) {
+                devices.add(createDeviceFromDbObject((BasicDBObject) dbObj));
+            }
+        }
+
+        return devices;
     }
 
     /**

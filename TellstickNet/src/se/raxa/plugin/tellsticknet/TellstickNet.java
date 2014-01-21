@@ -2,6 +2,10 @@ package se.raxa.plugin.tellsticknet;
 
 import se.raxa.server.devices.Connector;
 import se.raxa.server.devices.helpers.AbstractDevice;
+import se.raxa.server.exceptions.ClassCreationException;
+import se.raxa.server.plugins.devices.GetProperty;
+
+import java.util.Map;
 
 /**
  * @author Rasmus Eneman
@@ -9,16 +13,23 @@ import se.raxa.server.devices.helpers.AbstractDevice;
 public class TellstickNet extends AbstractDevice implements Connector {
 
     /**
-     * @return An array of types, ordered by position in tree
+     * Called when the device is about to be created
+     *
+     * @param propertyValues
+     *         A map with values for all properties to be set
+     *
+     * @throws ClassCreationException
+     *         As devices of this class can't be manually created
      */
     @Override
-    public String[] getType() {
-        return new String[] {"TellstickNet", "Connector"};
+    public void create(Map<String, String> propertyValues) throws ClassCreationException {
+        throw new ClassCreationException("Class can't be manually created");
     }
 
     /**
      * @return The unique activation code
      */
+    @GetProperty("code")
     public String getCode() {
         return getDBObj().getString("code");
     }
@@ -26,6 +37,7 @@ public class TellstickNet extends AbstractDevice implements Connector {
     /**
      * @return The firmware version
      */
+    @GetProperty("version")
     public String getVersion() {
         return getDBObj().getString("version");
     }

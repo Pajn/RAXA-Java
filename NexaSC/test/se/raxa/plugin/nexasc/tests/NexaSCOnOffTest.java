@@ -8,8 +8,6 @@ import se.raxa.server.devices.helpers.Devices;
 import se.raxa.server.devices.helpers.Status;
 import se.raxa.server.exceptions.ClassCreationException;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -21,12 +19,8 @@ public class NexaSCOnOffTest {
     @BeforeClass
     public static void oneTimeSetUp() throws ClassCreationException {
         nexaSCOnOff = Devices.createDeviceFromDbObject(NexaSCOnOff.class, new BasicDBObject());
-        nexaSCOnOff.setHouseDevice((byte) 13, (byte) 2);
-    }
-
-    @Test
-    public void testGetType() throws Exception {
-        assertEquals(true, Arrays.equals(new String[]{"NexaSCOnOff", "Lamp", "Executable", "Output"}, nexaSCOnOff.getType()));
+        nexaSCOnOff.setHouse((byte) 13);
+        nexaSCOnOff.setDevice((byte) 2);
     }
 
     @Test

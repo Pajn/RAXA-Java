@@ -6,9 +6,14 @@ import se.raxa.server.Database;
 import se.raxa.server.devices.Lamp;
 import se.raxa.server.devices.helpers.AbstractDevice;
 import se.raxa.server.devices.helpers.Status;
+import se.raxa.server.exceptions.BadPluginException;
 import se.raxa.server.exceptions.ClassCreationException;
 import se.raxa.server.exceptions.StatusChangeException;
+import se.raxa.server.plugins.devices.GetProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -17,11 +22,21 @@ import java.util.Random;
 public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
 
     /**
-     * Called when a new object is created
-     * Generates a unique random id as sender id
+     * Called when the device is about to be created
+     *
+     * @param propertyValues
+     *         A map with values for all properties to be set
+     *
+     * @throws IllegalArgumentException
+     *         if a property have an invalid value or if a required property isn't specified
+     * @throws ClassCreationException If the device can't be created
+     * @throws BadPluginException If the plugin doesn't handle as expected
      */
     @Override
-    public void onCreate() {
+    public void create(Map<String, String> propertyValues) throws IllegalArgumentException, ClassCreationException,
+            BadPluginException {
+        super.create(propertyValues);
+
         Random r = new Random();
         int rand;
         BasicDBObject query;
@@ -38,17 +53,22 @@ public class NexaSLOnOff extends AbstractDevice implements Lamp, NexaSL {
     }
 
     /**
-     * @return An array of types, ordered by position in tree
+     * @return A list of supported Connector classes, contains null if supports not having one
      */
     @Override
-    public String[] getType() {
-        return new String[] {"NexaSLOnOff", "NexaSL", "Lamp", "Executable", "Output"};
+    public List<Class> getSupportedConnectors() {
+        List <Class> classes = new ArrayList<>();
+
+        classes.add(TellstickNet.class);
+
+        return classes;
     }
 
     /**
      * @return The unique sender id of the device
      */
     @Override
+    @GetProperty("sender_id")
     public long getSenderID() {
         return getDBObj().getLong("sender_id");
     }
