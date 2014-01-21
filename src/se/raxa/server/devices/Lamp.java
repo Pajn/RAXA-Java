@@ -47,7 +47,7 @@ public interface Lamp extends Output, Executable {
      */
     public abstract void turnOn() throws StatusChangeException;
 
-    @AddAction(name="lamp:on")
+    @AddAction(name="lamp_on")
     public default void turnOnCaller() throws StatusChangeException {
         turnOn();
     }
@@ -59,7 +59,7 @@ public interface Lamp extends Output, Executable {
      */
     public abstract void turnOff() throws StatusChangeException;
 
-    @AddAction(name="lamp:off")
+    @AddAction(name="lamp_off")
     public default void turnOffCaller() throws StatusChangeException {
         turnOff();
     }

@@ -25,18 +25,25 @@ public class Action {
         name = annotation.name();
         this.method = method;
 
-        if (name.contains(":") && method.getParameterCount() == 0) {
-            string = name;
-        } else if (!name.contains(":") && method.getParameterCount() == 1) {
-            Class argumentClass = method.getParameterTypes()[0];
-            if (argumentClass == int.class) {
-                type = new Int(annotation.arguments());
-            } else {
-                throw new BadPluginException(String.format("An action of type \"%s\" is not supported", argumentClass.getSimpleName()));
-            }
-            string = String.format("%s:%s", name, type.toString());
-        } else {
-            throw new BadPluginException("An action can only receive one parameter if name doesn't contain : or zero parameters if i does");
+        if (name.contains(":")) {
+            throw new BadPluginException("A action name can't contain \":\"");
+        }
+
+        switch (method.getParameterCount()) {
+            case 0:
+                string = name.concat(":void");
+                break;
+            case 1:
+                Class argumentClass = method.getParameterTypes()[0];
+                if (argumentClass == int.class) {
+                    type = new Int(annotation.arguments());
+                } else {
+                    throw new BadPluginException(String.format("An action of type \"%s\" is not supported", argumentClass.getSimpleName()));
+                }
+                string = String.format("%s:%s", name, type.toString());
+                break;
+            default:
+                throw new BadPluginException("An action can only receive zero or one parameter");
         }
     }
 

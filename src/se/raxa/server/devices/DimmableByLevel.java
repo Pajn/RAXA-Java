@@ -29,7 +29,7 @@ public interface DimmableByLevel extends Lamp {
      */
     public abstract void setDimLevel(int level) throws StatusChangeException;
 
-    @AddAction(name="dim_level", arguments = "0")
+    @AddAction(name="dim_level", arguments = {"0", "100"})
     public default void setDimLevelCaller(int level) throws StatusChangeException {
         setDimLevel(level);
     }
